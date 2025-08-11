@@ -1,20 +1,29 @@
 import { css, styled } from "styled-components";
-import type { ButtonSize, ButtonVariant } from "./Button.types";
+import type { ButtonSize, ButtonVariant, ButtonColorScheme } from "./Button.types";
+import { lighten, darken } from "polished";
+
+const colorMap: Record<ButtonColorScheme, { bg: string; text: string }> = {
+  blue: { bg: "#305CDE", text: "white" },
+  green: { bg: "#2E6F40", text: "white" },
+  red: { bg: "#CD1C18", text: "white" },
+  pink: { bg: "#FF00FF", text: "white" },
+  yellow: { bg: "#D3AF37", text: "white" },
+  gray: { bg: "#252525", text: "white" },
+};
 
 export const StyledButton = styled.button<{
   $size: ButtonSize;
   $variant: ButtonVariant;
+  $colorScheme: ButtonColorScheme;
 }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: none;
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: navy;
-  color: white;
+  border: none;
 
   ${({ $size }) => {
     switch ($size) {
@@ -49,68 +58,69 @@ export const StyledButton = styled.button<{
     }
   }}
 
-  ${({ $variant }) => {
+  ${({ $variant, $colorScheme }) => {
+    const { bg, text } = $colorScheme
+      ? colorMap[$colorScheme] || colorMap.blue
+      : { bg: "black", text: "white" };
+
     switch ($variant) {
       case "solid":
         return css`
-          background: black;
-          color: white;
-
+          background: ${bg};
+          color: ${text};
           &:hover {
-            background: #333;
+            background: ${darken(0.1, bg)};
           }
         `;
       case "subtle":
         return css`
-          background: #ddd;
+          background: ${lighten(0.3, bg)};
+          color: ${text};
           &:hover {
-            background: #ccc;
+            background: ${lighten(0.25, bg)};
           }
-          color: black;
         `;
       case "surface":
         return css`
-          background: #ddd;
+          background: ${lighten(0.3, bg)};
+          color: ${text};
+          border: 1px solid ${lighten(0.2, bg)};
           &:hover {
-            background: #ccc;
+            background: ${lighten(0.25, bg)};
           }
-          color: black;
-          border: 1px solid #ccc;
         `;
       case "outline":
         return css`
           background: transparent;
+          color: ${bg};
+          border: 1px solid ${bg};
           &:hover {
-            background: #ddd;
+            background: ${lighten(0.45, bg)};
           }
-          color: black;
-          border: 1px solid #ccc;
         `;
       case "ghost":
         return css`
           background: transparent;
+          color: ${bg};
           &:hover {
-            background: #ddd;
+            background: ${lighten(0.45, bg)};
           }
-          color: black;
         `;
       case "plain":
         return css`
           background: transparent;
-          color: black;
+          color: ${bg};
         `;
       default:
         return css`
-          background: black;
-          color: white;
-
+          background: ${bg};
+          color: ${text};
           &:hover {
-            background: #333;
+            background: ${darken(0.1, bg)};
           }
         `;
     }
   }}
-
 
   &:disabled {
     opacity: 0.5;

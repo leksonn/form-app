@@ -1,14 +1,24 @@
-import React from 'react';
-import { StyledButton } from './Button.styles';
-import type { ButtonProps } from './Button.types';
+import React from "react";
+import { StyledButton } from "./Button.styles";
+import type { ButtonProps } from "./Button.types";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ size = 'medium', variant = 'solid', children, ...props }, ref) => {
+  (
+    {
+      size = "medium",
+      variant = "solid",
+      colorScheme = "blue",
+      children,
+      ...props
+    },
+    ref
+  ) => {
     return (
-      <StyledButton 
+      <StyledButton
         ref={ref}
         $size={size}
         $variant={variant}
+        $colorScheme={colorScheme}
         {...props}
       >
         {children}
@@ -17,4 +27,4 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   }
 );
 
-Button.displayName = 'Button';
+Button.displayName = "Button";
