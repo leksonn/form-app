@@ -1,7 +1,10 @@
 import { css, styled } from "styled-components";
-import type { ButtonSize } from "./Button.types";
+import type { ButtonSize, ButtonVariant } from "./Button.types";
 
-export const StyledButton = styled.button<{ $size: ButtonSize }>`
+export const StyledButton = styled.button<{
+  $size: ButtonSize;
+  $variant: ButtonVariant;
+}>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -46,9 +49,68 @@ export const StyledButton = styled.button<{ $size: ButtonSize }>`
     }
   }}
 
-  &:hover {
-    background: black;
-  }
+  ${({ $variant }) => {
+    switch ($variant) {
+      case "solid":
+        return css`
+          background: black;
+          color: white;
+
+          &:hover {
+            background: #333;
+          }
+        `;
+      case "subtle":
+        return css`
+          background: #ddd;
+          &:hover {
+            background: #ccc;
+          }
+          color: black;
+        `;
+      case "surface":
+        return css`
+          background: #ddd;
+          &:hover {
+            background: #ccc;
+          }
+          color: black;
+          border: 1px solid #ccc;
+        `;
+      case "outline":
+        return css`
+          background: transparent;
+          &:hover {
+            background: #ddd;
+          }
+          color: black;
+          border: 1px solid #ccc;
+        `;
+      case "ghost":
+        return css`
+          background: transparent;
+          &:hover {
+            background: #ddd;
+          }
+          color: black;
+        `;
+      case "plain":
+        return css`
+          background: transparent;
+          color: black;
+        `;
+      default:
+        return css`
+          background: black;
+          color: white;
+
+          &:hover {
+            background: #333;
+          }
+        `;
+    }
+  }}
+
 
   &:disabled {
     opacity: 0.5;

@@ -6,9 +6,12 @@ export default function Home() {
 
   return (
     <>
-      <Button size="small" disabled>Click Me</Button>
-      <Button size="medium">Click Me</Button>
-      <Button size="large">Click Me</Button>
+      <Button size = "large"variant="solid">Solid</Button>
+      <Button variant="subtle">Subtle</Button>
+      <Button variant="surface">Surface</Button>
+      <Button variant="outline">Outline</Button>
+      <Button size = "small"variant="ghost">Ghost</Button>
+      <Button variant="plain">Plain</Button>
     </>
   );
 }
