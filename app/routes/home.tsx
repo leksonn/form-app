@@ -1,5 +1,6 @@
 import { Button } from "../components/ui/Button";
 import type { Route } from "./+types/home";
+import { FiDownload, FiArrowRight, FiHome, FiChevronDown } from "react-icons/fi";
 
 export default function Home() {
   const _dummyRoute: Route.ComponentProps | null = null;
@@ -43,6 +44,11 @@ export default function Home() {
         isLoading={true}
       >
         Click Me
+      </Button>
+      <Button leftIcon={<FiDownload />}>Download</Button>
+      <Button rightIcon={<FiArrowRight />}>Continue</Button>
+      <Button leftIcon={<FiHome />} rightIcon={<FiChevronDown />}>
+        Menu
       </Button>
     </div>
   );

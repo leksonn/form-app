@@ -10,6 +10,23 @@ const colorMap: Record<ButtonColorScheme, { bg: string; text: string }> = {
   yellow: { bg: "#D3AF37", text: "white" },
   gray: { bg: "#252525", text: "white" },
 };
+
+export const IconWrapper = styled.span<{ 
+    $position: "left" | "right"; 
+    $size: ButtonSize 
+}>`
+
+display: inline-flex;
+align-items: center;
+margin-${({ $position }) => ($position === "left" ? "right" : "left")}: 
+${({ $size }) => ($size === "small" ? "6px" : $size === "large" ? "10px" : "8px")};
+
+& > svg {
+width: ${({ $size }) => ($size === "small" ? "14px" : $size === "large" ? "18px" : "16px")};
+height: ${({ $size }) => ($size === "small" ? "14px" : $size === "large" ? "18px" : "16px")};
+}
+`;
+
 export const Spinner = styled.div<{ $size: ButtonSize }>`
   @keyframes spin {
     to { transform: rotate(360deg); }

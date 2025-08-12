@@ -1,5 +1,5 @@
 import React from "react";
-import { Spinner, StyledButton } from "./Button.styles";
+import { Spinner, StyledButton, IconWrapper } from "./Button.styles";
 import type { ButtonProps } from "./Button.types";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -10,6 +10,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       colorScheme = "blue",
       isLoading = false,
       loadingText,
+      leftIcon,
+      rightIcon,
       children,
       disabled,
       ...props
@@ -32,7 +34,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             {loadingText || children}
           </>
         ) : (
-          children
+          <>
+          {leftIcon && 
+          (<IconWrapper $position="left" $size={size}>
+            {leftIcon}
+          </IconWrapper> )}
+          {children}
+          {rightIcon && 
+          (<IconWrapper $position="right" $size={size}>
+            {rightIcon}
+          </IconWrapper> )}
+          </>
+          
         )}
       </StyledButton>
     );
