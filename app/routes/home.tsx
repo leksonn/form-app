@@ -1,4 +1,5 @@
 import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
 import type { Route } from "./+types/home";
 import { FiDownload, FiArrowRight, FiHome, FiChevronDown } from "react-icons/fi";
 
@@ -50,6 +51,7 @@ export default function Home() {
       <Button leftIcon={<FiHome />} rightIcon={<FiChevronDown />}>
         Menu
       </Button>
+      <Input placeholder="Enter text here" />
     </div>
   );
 }
