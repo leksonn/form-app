@@ -1,7 +1,12 @@
+import {
+  FiArrowRight,
+  FiChevronDown,
+  FiDownload,
+  FiHome,
+} from "react-icons/fi";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import type { Route } from "./+types/home";
-import { FiDownload, FiArrowRight, FiHome, FiChevronDown } from "react-icons/fi";
 
 export default function Home() {
   const _dummyRoute: Route.ComponentProps | null = null;
@@ -17,7 +22,14 @@ export default function Home() {
   const colors = ["blue", "green", "red", "pink", "yellow", "gray"] as const;
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", margin: "1rem" }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "0.5rem",
+        margin: "1rem",
+      }}
+    >
       <Button size="small" variant="solid" colorScheme="blue">
         Small Solid Blue
       </Button>
@@ -51,15 +63,28 @@ export default function Home() {
       <Button leftIcon={<FiHome />} rightIcon={<FiChevronDown />}>
         Menu
       </Button>
-      <Input variant="outline" size="small" placeholder="Enter text here" />
-      <Input variant="flushed" size="small" placeholder="Enter text here" />
-      <Input variant="subtle" size="small" placeholder="Enter text here" />
+      <Input placeholder="Enter text here" />
+      <Input variant="flushed" size="small" error ={true} placeholder="Enter text here" />
+      <Input variant="subtle" size="small" error ={true} placeholder="Enter text here" />
       <Input variant="outline" size="medium" placeholder="Enter text here" />
       <Input variant="flushed" size="medium" placeholder="Enter text here" />
       <Input variant="subtle" size="medium" placeholder="Enter text here" />
-      <Input variant="outline" size="large" placeholder="Enter text here" />
-      <Input variant="flushed" size="large" placeholder="Enter text here" />
-      <Input variant="subtle" size="large" placeholder="Enter text here" />
+      <Input variant="outline" size="large" error ={true} placeholder="Enter text here" />
+      <Input variant="flushed" size="large" error ={true} placeholder="Enter text here" />
+      <Input variant="subtle" size="large" error ={true} placeholder="Enter text here" />
+      <Input
+        placeholder="Username"
+        helperText="This will be visible on your profile."
+      />
+
+      <Input
+        placeholder="Password"
+        type="password"
+        variant="flushed"
+        error ={true}
+        required
+        helperText="Must be at least 8 characters."
+      />
     </div>
   );
 }

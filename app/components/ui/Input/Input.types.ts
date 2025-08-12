@@ -5,5 +5,7 @@ export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
     variant?: InputVariant;
     size?: InputSize;
+    helperText?: string;
+    error?: boolean;
 }
 
