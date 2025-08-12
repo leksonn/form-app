@@ -1,5 +1,5 @@
 import React from "react";
-import { StyledButton } from "./Button.styles";
+import { Spinner, StyledButton } from "./Button.styles";
 import type { ButtonProps } from "./Button.types";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -8,7 +8,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       size = "medium",
       variant = "solid",
       colorScheme = "blue",
+      isLoading = false,
+      loadingText,
       children,
+      disabled,
       ...props
     },
     ref
@@ -19,9 +22,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         $size={size}
         $variant={variant}
         $colorScheme={colorScheme}
+        disabled={isLoading || disabled}
+        aria-busy={isLoading}
         {...props}
       >
-        {children}
+        {isLoading ? (
+          <>
+            <Spinner $size={size} />
+            {loadingText || children}
+          </>
+        ) : (
+          children
+        )}
       </StyledButton>
     );
   }

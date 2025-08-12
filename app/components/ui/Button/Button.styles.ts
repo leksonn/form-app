@@ -10,6 +10,20 @@ const colorMap: Record<ButtonColorScheme, { bg: string; text: string }> = {
   yellow: { bg: "#D3AF37", text: "white" },
   gray: { bg: "#252525", text: "white" },
 };
+export const Spinner = styled.div<{ $size: ButtonSize }>`
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  display: inline-block;
+  width: ${({ $size }) => ($size === 'small' ? '14px' : $size === 'large' ? '18px' : '16px')};
+  height: ${({ $size }) => ($size === 'small' ? '14px' : $size === 'large' ? '18px' : '16px')};
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  border-right-color: transparent;
+  animation: spin 0.75s linear infinite;
+  margin-right: 8px;
+  vertical-align: text-bottom;
+`;
 
 export const StyledButton = styled.button<{
   $size: ButtonSize;
