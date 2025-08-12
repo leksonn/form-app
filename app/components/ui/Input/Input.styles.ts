@@ -1,7 +1,7 @@
 import { css, styled } from "styled-components";
-import type { InputVariant } from "./Input.types";
+import type { InputVariant, InputSize } from "./Input.types";
 
-export const StyledInput = styled.input<{ $variant: InputVariant }>`
+export const StyledInput = styled.input<{ $variant: InputVariant, $size: InputSize }>`
   padding: 0.5rem 0.75rem;
   border: 1px solid #ccc;
   font-size: 1rem;
@@ -47,6 +47,27 @@ export const StyledInput = styled.input<{ $variant: InputVariant }>`
             border-bottom-color: #007bff;
             box-shadow: none;
           }
+        `;
+      default:
+        return "";
+    }
+  }}
+  ${({ $size }) => {
+    switch ($size) {
+      case "small":
+        return css`
+          font-size: 0.875rem;
+          padding: 0.25rem 0.5rem;
+        `;
+      case "medium":
+        return css`
+          font-size: 1rem;
+          padding: 0.5rem 0.75rem;
+        `;
+      case "large":
+        return css`
+          font-size: 1.125rem;
+          padding: 0.75rem 1rem;
         `;
       default:
         return "";

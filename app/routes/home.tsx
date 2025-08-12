@@ -51,9 +51,15 @@ export default function Home() {
       <Button leftIcon={<FiHome />} rightIcon={<FiChevronDown />}>
         Menu
       </Button>
-      <Input variant="outline" placeholder="Enter text here" />
-      <Input variant="flushed" placeholder="Enter text here" />
-      <Input variant="subtle" placeholder="Enter text here" />
+      <Input variant="outline" size="small" placeholder="Enter text here" />
+      <Input variant="flushed" size="small" placeholder="Enter text here" />
+      <Input variant="subtle" size="small" placeholder="Enter text here" />
+      <Input variant="outline" size="medium" placeholder="Enter text here" />
+      <Input variant="flushed" size="medium" placeholder="Enter text here" />
+      <Input variant="subtle" size="medium" placeholder="Enter text here" />
+      <Input variant="outline" size="large" placeholder="Enter text here" />
+      <Input variant="flushed" size="large" placeholder="Enter text here" />
+      <Input variant="subtle" size="large" placeholder="Enter text here" />
     </div>
   );
 }
