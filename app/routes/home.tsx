@@ -3,6 +3,7 @@ import {
   FiChevronDown,
   FiDownload,
   FiHome,
+  FiSearch
 } from "react-icons/fi";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
@@ -84,6 +85,46 @@ export default function Home() {
         error ={true}
         required
         helperText="Must be at least 8 characters."
+      />
+      <Input
+        placeholder="Search"
+        size="medium"
+        variant="outline"
+        icon={<FiSearch />}
+        helperText="Search for anything..."
+      />
+      <Input
+        placeholder="Search"
+        size="small"
+        variant="outline"
+        icon={<FiSearch />}
+        helperText="Search for anything..."
+      /><Input
+        placeholder="Search"
+        size="large"
+        variant="outline"
+        icon={<FiSearch />}
+        helperText="Search for anything..."
+      />
+      <Input
+        placeholder="Search"
+        size="medium"
+        variant="subtle"
+        icon={<FiHome />}
+        helperText="Search for anything..."
+      />
+      <Input
+        placeholder="Search"
+        size="small"
+        variant="outline"
+        icon={<FiHome />}
+        helperText="Search for anything..."
+      /><Input
+        placeholder="Search"
+        size="large"
+        variant="flushed"
+        icon={<FiHome />}
+        helperText="Search for anything..."
       />
     </div>
   );

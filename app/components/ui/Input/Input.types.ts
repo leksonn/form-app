@@ -1,3 +1,5 @@
+import React from "react";
+
 export type InputVariant = 'subtle' | 'outline' | 'flushed' ;
 export type InputSize = "small" | "medium" | "large";
 
@@ -7,5 +9,6 @@ export interface InputProps
     size?: InputSize;
     helperText?: string;
     error?: boolean;
+    icon?: React.ReactNode;
 }
 
