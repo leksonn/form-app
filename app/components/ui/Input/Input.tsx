@@ -1,11 +1,11 @@
 import React from 'react';
+import type { InputProps } from './Input.types';
 import { StyledInput } from './Input.styles';
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ ...props }, ref) => {
-    return <StyledInput ref={ref} {...props} />;
+  ({variant = "outline", ...props }, ref) => {
+    return <StyledInput $variant = {variant} ref={ref} {...props} />;
   }
 );
 

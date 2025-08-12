@@ -17,7 +17,7 @@ export default function Home() {
   const colors = ["blue", "green", "red", "pink", "yellow", "gray"] as const;
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", margin: "1rem" }}>
       <Button size="small" variant="solid" colorScheme="blue">
         Small Solid Blue
       </Button>
@@ -51,7 +51,9 @@ export default function Home() {
       <Button leftIcon={<FiHome />} rightIcon={<FiChevronDown />}>
         Menu
       </Button>
-      <Input placeholder="Enter text here" />
+      <Input variant="outline" placeholder="Enter text here" />
+      <Input variant="flushed" placeholder="Enter text here" />
+      <Input variant="subtle" placeholder="Enter text here" />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { css, styled } from "styled-components";
+import type { InputVariant } from "./Input.types";
 
-export const StyledInput = styled.input`
+export const StyledInput = styled.input<{ $variant: InputVariant }>`
   padding: 0.5rem 0.75rem;
   border: 1px solid #ccc;
-  border-radius: 6px;
   font-size: 1rem;
   outline: none;
   width: 100%;
@@ -13,4 +13,43 @@ export const StyledInput = styled.input`
     border-color: lightblue;
     box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.2);
   }
+  ${({ $variant }) => {
+    switch ($variant) {
+      case "subtle":
+        return css`
+          background-color: #f9f9f9;
+          border-color: #f9f9f9;
+
+          border-radius: 6px;
+
+          &:focus {
+            border-color: #b0b0b0;
+            box-shadow: 0 0 0 2px rgba(176, 176, 176, 0.2);
+          }
+        `;
+      case "outline":
+        return css`
+          background-color: transparent;
+          border-color: #ccc;
+          border-radius: 6px;
+
+          &:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+          }
+        `;
+      case "flushed":
+        return css`
+          background-color: transparent;
+          border: none;
+          border-bottom: 2px solid #ccc;
+          &:focus {
+            border-bottom-color: #007bff;
+            box-shadow: none;
+          }
+        `;
+      default:
+        return "";
+    }
+  }}
 `;
