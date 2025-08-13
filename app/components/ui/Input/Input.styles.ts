@@ -19,30 +19,34 @@ export const HelperText = styled.span<{ $error?: boolean }>`
   color: ${({ $error }) => ($error ? errorColor : normalBorderColor)};
 `;
 
-export const IconWrapper = styled.div<{ $hasIcon: boolean; $size: InputSize }>`
+export const IconWrapper = styled.div<{
+  $hasIcon: boolean;
+  $size: InputSize;
+  $clickable?: boolean;
+}>`
   align-items: center;
   position: relative;
 
   svg,
   img {
     position: relative;
-      top: 50%;
-      transform: translateY(-70%);
-    pointer-events: none;
+    top: 50%;
+    transform: translateY(-70%);
+    ${({ $clickable }) => !$clickable && "pointer-events: none;"}
     color: ${normalBorderColor};
     font-size: 1rem;
     left: ${({ $size }) => {
-    switch ($size) {
-      case "small":
-        return "0.5rem"; 
-      case "medium":
-        return "0.75rem";
-      case "large":
-        return "1rem";
-      default:
-        return "0.75rem";
-    }
-  }};
+      switch ($size) {
+        case "small":
+          return "0.5rem";
+        case "medium":
+          return "0.75rem";
+        case "large":
+          return "1rem";
+        default:
+          return "0.75rem";
+      }
+    }};
   }
 `;
 
