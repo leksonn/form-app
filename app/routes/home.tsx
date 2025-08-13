@@ -1,8 +1,6 @@
+import { DateInput } from "~/components/ui/DateInput";
 import { PasswordInput } from "../components/ui/PasswordInput/PasswordInput";
-import { Input } from "../components/ui/Input/Input";
-
 import type { Route } from "./+types/home";
-import { FiSearch } from "react-icons/fi";
 
 export default function Home() {
   const _dummyRoute: Route.ComponentProps | null = null;
@@ -47,7 +45,27 @@ export default function Home() {
         helperText="Must be at least 8 characters."
         error={false}
       />
-      
+      <DateInput
+        placeholder="Select a date"
+        size="small"
+        variant="subtle"
+        helperText="Select a date from the calendar."
+        error={false}
+      />
+      <DateInput
+        placeholder="Birthdate"
+        size="medium"
+        variant="subtle"
+        helperText="Birthdate."
+        error={false}
+      />
+      <DateInput
+        placeholder="Select a date"
+        size="large"
+        variant="subtle"
+        helperText="Select a date from the calendar."
+        error={false}
+      />
     </div>
   );
 }
