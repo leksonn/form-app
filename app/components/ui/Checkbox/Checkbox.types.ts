@@ -1,7 +1,9 @@
 export type CheckboxVariant = 'solid' | 'subtle' | 'outline' ;
+export type CheckboxSize = 'small' | 'medium' | 'large'; 
 
-export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
     variant?: CheckboxVariant;
+    size?: CheckboxSize;
     label?: string;
     indeterminate?: boolean;
     error?: boolean;

@@ -1,5 +1,5 @@
 import { css, styled } from "styled-components";
-import type { CheckboxVariant } from "./Checkbox.types";
+import type { CheckboxSize, CheckboxVariant } from "./Checkbox.types";
 
 export const CheckboxContainer = styled.label`
   display: inline-flex;
@@ -19,6 +19,7 @@ export const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
 export const StyledCheckbox = styled.div<{
   $checked: boolean;
   $variant?: CheckboxVariant;
+  $size?: CheckboxSize;
   $error?: boolean;
   $indeterminate?: boolean;
 }>`
@@ -53,6 +54,39 @@ export const StyledCheckbox = styled.div<{
     }
   }}
 
+  ${({ $size }) => {
+    switch ($size) {
+      case "small":
+        return css`
+          width: 1rem;
+          height: 1rem;
+          font-size: 0.75rem;
+          line-height: 1rem;
+        `;
+      case "medium":
+        return css`
+          width: 1.5rem;
+          height: 1.5rem;
+          font-size: 1rem;
+          line-height: 1.5rem;
+        `;
+      case "large":
+        return css`
+          width: 2rem;
+          height: 2rem;
+          font-size: 1.25rem;
+          line-height: 2rem;
+        `;
+      default:
+        return css`
+          width: 1.5rem;
+          height: 1.5rem;
+          font-size: 1rem;
+          line-height: 1.5rem;
+        `;
+    }
+  }}
+
   &:after {
     content: ${({ $checked, $indeterminate }) =>
       $indeterminate ? '"-"' : $checked ? '"✓"' : '""'};
@@ -62,6 +96,16 @@ export const StyledCheckbox = styled.div<{
   }
 `;
 
-export const CheckboxLabel = styled.span`
-  font-size: 1rem;
-`;
+export const CheckboxLabel = styled.span <{$size?: CheckboxSize}>`
+  font-size: ${({ $size }) => {
+    switch ($size) {
+      case "small":
+        return "0.75rem";
+      case "medium":
+        return "1rem";
+      case "large":
+        return "1.25rem";
+      default:
+        return "1rem";
+    }
+  }};`;

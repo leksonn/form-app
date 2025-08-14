@@ -13,6 +13,9 @@ export default function Home() {
       <Checkbox variant="outline" label="Outline Checkbox" />
       <Checkbox indeterminate label="Indeterminate Checkbox" />
       <Checkbox error label="Error Checkbox" />
+      <Checkbox size="small" variant="solid" label="Solid Checkbox" />
+      <Checkbox size="medium" variant="solid" label="Solid Checkbox" />
+      <Checkbox size="large" variant="solid" label="Solid Checkbox" />
     </div>
   );
 }

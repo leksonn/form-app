@@ -9,6 +9,7 @@ import type { CheckboxProps } from "./Checkbox.types";
 
 export const Checkbox = ({
   variant = "outline",
+  size = "medium",
   label,
   indeterminate = false,
   error = false,
@@ -24,8 +25,8 @@ export const Checkbox = ({
     <CheckboxContainer>
       <HiddenCheckbox checked={checked} onChange={handleCheckboxChange} aria-checked={indeterminate ? "mixed" : checked}
         aria-invalid={error} {...props}/>
-      <StyledCheckbox $checked={checked} $variant={variant} $error={error} $indeterminate = {indeterminate}/>
-      {label && <CheckboxLabel>{label}</CheckboxLabel>}
+      <StyledCheckbox $checked={checked} $variant={variant} $size={size} $error={error} $indeterminate = {indeterminate}/>
+      {label && <CheckboxLabel $size = {size}>{label}</CheckboxLabel>}
     </CheckboxContainer>
   );
 };
