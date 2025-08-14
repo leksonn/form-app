@@ -69,6 +69,26 @@ export default function Home() {
       />
       <Select
         label="Choose a fruit"
+        variant="outline"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
+      />
+      <Select
+        label="Choose a fruit"
+        variant="subtle"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
+      />
+      <Select
+        label="Choose a fruit"
+        placeholder="Select a fruit"
+        variant="subtle"
         options={[
           { label: "Apple", value: "apple" },
           { label: "Banana", value: "banana" },

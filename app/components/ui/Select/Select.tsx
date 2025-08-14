@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { SelectLabel, SelectWrapper, StyledSelect } from "./Select.styles";
 import type { SelectProps } from "./Select.types";
 
-export const Select = ({ options, label, ...props }: SelectProps) => {
+export const Select = ({
+  options = [],
+  label,
+  variant = "outline",
+  placeholder,
+  ...props
+}: SelectProps) => {
   const [value, setValue] = useState(props.value || "");
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -15,7 +21,15 @@ export const Select = ({ options, label, ...props }: SelectProps) => {
   return (
     <SelectWrapper>
       {label && <SelectLabel>{label}</SelectLabel>}
-      <StyledSelect value={value} onChange={handleChange} {...props}>
+      <StyledSelect
+        value={value}
+        onChange={handleChange}
+        $variant={variant}
+        {...props}
+      >
+        <option value="" disabled hidden>
+          {placeholder || label || "Select an option"}
+        </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
