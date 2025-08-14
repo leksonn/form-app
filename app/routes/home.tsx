@@ -79,7 +79,6 @@ export default function Home() {
         helperText="Select a date from the calendar."
         error={false}
       />
-      />
       <Checkbox
         label="Enable dark mode"
         description="Switches the interface to a dark theme."
