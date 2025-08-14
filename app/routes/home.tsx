@@ -1,5 +1,6 @@
 import { Checkbox } from "~/components/ui/Checkbox/Checkbox";
 import { DateInput } from "~/components/ui/DateInput";
+import { Select } from "~/components/ui/Select/Select";
 import { PasswordInput } from "../components/ui/PasswordInput/PasswordInput";
 import type { Route } from "./+types/home";
 
@@ -84,6 +85,37 @@ export default function Home() {
         description="Switches the interface to a dark theme."
         variant="outline"
         size="large"
+      />
+      <Select
+        label="Choose a fruit"
+        size="small"
+        variant="outline"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
+      />
+      <Select
+        label="Choose a fruit"
+        variant="subtle"
+        size="medium"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
+      />
+      <Select
+        label="Choose a fruit"
+        placeholder="Select a fruit"
+        variant="subtle"
+        size="large"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
       />
     </div>
   );
