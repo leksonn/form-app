@@ -1,4 +1,6 @@
 import { Checkbox } from "~/components/ui/Checkbox/Checkbox";
+import { DateInput } from "~/components/ui/DateInput";
+import { PasswordInput } from "../components/ui/PasswordInput/PasswordInput";
 import type { Route } from "./+types/home";
 
 export default function Home() {
@@ -27,6 +29,56 @@ export default function Home() {
         description="Switches the interface to a dark theme."
         variant="outline"
         size="medium"
+      />
+      <Checkbox
+        label="Enable dark mode"
+        description="Switches the interface to a dark theme."
+        variant="outline"
+        size="large"
+      />
+    
+      <PasswordInput
+        placeholder="Enter your password"
+        size="small"
+        variant="subtle"
+        helperText="Must be at least 8 characters."
+        error={false}
+      />
+      <PasswordInput
+        placeholder="Enter your password"
+        size="medium"
+        variant="subtle"
+        helperText="Must be at least 8 characters."
+        error={false}
+      />
+      <PasswordInput
+        placeholder="Enter your password"
+        size="large"
+        variant="subtle"
+        helperText="Must be at least 8 characters."
+        error={false}
+      />
+      <DateInput
+        placeholder="Select a date"
+        size="small"
+        variant="subtle"
+        helperText="Select a date from the calendar."
+        error={false}
+      />
+      <DateInput
+        placeholder="Birthdate"
+        size="medium"
+        variant="subtle"
+        helperText="Birthdate."
+        error={false}
+      />
+      <DateInput
+        placeholder="Select a date"
+        size="large"
+        variant="subtle"
+        helperText="Select a date from the calendar."
+        error={false}
+      />
       />
       <Checkbox
         label="Enable dark mode"
