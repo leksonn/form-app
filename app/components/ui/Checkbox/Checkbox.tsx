@@ -5,8 +5,15 @@ import {
   HiddenCheckbox,
   StyledCheckbox,
 } from "./Checkbox.styles";
+import type { CheckboxProps } from "./Checkbox.types";
 
-export const Checkbox = ({ label = "Checkbox" }: { label?: string }) => {
+export const Checkbox = ({
+  variant = "outline",
+  label,
+  indeterminate = false,
+  error = false,
+  ...props
+}: CheckboxProps ) => {
   const [checked, setChecked] = useState(false);
 
   const handleCheckboxChange = () => {
@@ -15,9 +22,10 @@ export const Checkbox = ({ label = "Checkbox" }: { label?: string }) => {
 
   return (
     <CheckboxContainer>
-      <HiddenCheckbox checked={checked} onChange={handleCheckboxChange} />
-      <StyledCheckbox $checked={checked} />
-      <CheckboxLabel>{label}</CheckboxLabel>
+      <HiddenCheckbox checked={checked} onChange={handleCheckboxChange} aria-checked={indeterminate ? "mixed" : checked}
+        aria-invalid={error} {...props}/>
+      <StyledCheckbox $checked={checked} $variant={variant} $error={error} $indeterminate = {indeterminate}/>
+      {label && <CheckboxLabel>{label}</CheckboxLabel>}
     </CheckboxContainer>
   );
 };
