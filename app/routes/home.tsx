@@ -1,4 +1,5 @@
 import { DateInput } from "~/components/ui/DateInput";
+import { Select } from "~/components/ui/Select/Select";
 import { PasswordInput } from "../components/ui/PasswordInput/PasswordInput";
 import type { Route } from "./+types/home";
 
@@ -65,6 +66,14 @@ export default function Home() {
         variant="subtle"
         helperText="Select a date from the calendar."
         error={false}
+      />
+      <Select
+        label="Choose a fruit"
+        options={[
+          { label: "Apple", value: "apple" },
+          { label: "Banana", value: "banana" },
+          { label: "Cherry", value: "cherry" },
+        ]}
       />
     </div>
   );
