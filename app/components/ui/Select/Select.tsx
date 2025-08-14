@@ -6,6 +6,7 @@ export const Select = ({
   options = [],
   label,
   variant = "outline",
+  size = "medium",
   placeholder,
   ...props
 }: SelectProps) => {
@@ -25,6 +26,7 @@ export const Select = ({
         value={value}
         onChange={handleChange}
         $variant={variant}
+        $size={size}
         {...props}
       >
         <option value="" disabled hidden>

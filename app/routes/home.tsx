@@ -69,6 +69,7 @@ export default function Home() {
       />
       <Select
         label="Choose a fruit"
+        size="small"
         variant="outline"
         options={[
           { label: "Apple", value: "apple" },
@@ -79,6 +80,7 @@ export default function Home() {
       <Select
         label="Choose a fruit"
         variant="subtle"
+        size="medium"
         options={[
           { label: "Apple", value: "apple" },
           { label: "Banana", value: "banana" },
@@ -89,6 +91,7 @@ export default function Home() {
         label="Choose a fruit"
         placeholder="Select a fruit"
         variant="subtle"
+        size="large"
         options={[
           { label: "Apple", value: "apple" },
           { label: "Banana", value: "banana" },

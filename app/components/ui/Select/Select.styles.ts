@@ -1,5 +1,5 @@
 import { css, styled } from "styled-components";
-import type { SelectVariant } from "./Select.types";
+import type { SelectSize, SelectVariant } from "./Select.types";
 
 export const SelectWrapper = styled.div`
   display: flex;
@@ -14,8 +14,11 @@ export const SelectLabel = styled.label`
   padding-right: 3rem;
 `;
 
-export const StyledSelect = styled.select<{ $variant?: SelectVariant }>`
-  padding: 0.5rem 2rem 0.5rem 0.75rem; 
+export const StyledSelect = styled.select<{
+  $variant?: SelectVariant;
+  $size?: SelectSize;
+}>`
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
   font-size: 1rem;
@@ -26,9 +29,8 @@ export const StyledSelect = styled.select<{ $variant?: SelectVariant }>`
   margin-right: 1rem;
 
   & option:first-child {
-    color: #727272ff; 
+    color: #727272ff;
   }
-
 
   ${({ $variant }) => {
     switch ($variant) {
@@ -49,6 +51,31 @@ export const StyledSelect = styled.select<{ $variant?: SelectVariant }>`
             outline: none;
             border-color: gray;
           }
+        `;
+    }
+  }}
+
+  ${({ $size }) => {
+    switch ($size) {
+      case "small":
+        return css`
+          font-size: 0.875rem;
+          padding: 0.25rem 0.5rem;
+        `;
+      case "medium":
+        return css`
+          font-size: 1rem;
+          padding: 0.5rem 0.75rem;
+        `;
+      case "large":
+        return css`
+          font-size: 1.125rem;
+          padding: 0.75rem 1rem;
+        `;
+      default:
+        return css`
+          font-size: 1rem;
+          padding: 0.5rem 0.75rem;
         `;
     }
   }}

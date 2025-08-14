@@ -1,4 +1,5 @@
 export type SelectVariant = "subtle" | "outline";
+export type SelectSize = "small" | "medium" | "large";
 
 export interface SelectOption {
   value: string;
@@ -10,5 +11,6 @@ export interface SelectProps
   options: SelectOption[];
   label?: string;
   variant?: SelectVariant;
+  size?: SelectSize;
   placeholder?: string;
 }
