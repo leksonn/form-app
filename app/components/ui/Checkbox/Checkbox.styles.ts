@@ -16,29 +16,8 @@ export const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   height: 0;
 `;
 
-export const CheckboxDescription = styled.span<{ $size?: CheckboxSize }>`
-  color: gray;
-  font-size: ${({ $size }) => {
-    switch ($size) {
-      case "small":
-        return "0.5rem";
-      case "medium":
-        return "0.75rem";
-      case "large":
-        return "1rem";
-      default:
-        return "0.75rem";
-    }
-  }};
-`;
-
-export const LabelWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 export const StyledCheckbox = styled.div<{
-  $checked: boolean;
+  $checked?: boolean;
   $variant?: CheckboxVariant;
   $size?: CheckboxSize;
   $error?: boolean;

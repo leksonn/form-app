@@ -1,121 +1,69 @@
-import { Checkbox } from "~/components/ui/Checkbox/Checkbox";
-import { DateInput } from "~/components/ui/DateInput";
-import { Select } from "~/components/ui/Select/Select";
-import { PasswordInput } from "../components/ui/PasswordInput/PasswordInput";
-import type { Route } from "./+types/home";
+import {
+  FormWrapper,
+  type FieldConfig,
+} from "../components/FormWrapper/FormWrapper";
 
 export default function Home() {
-  const _dummyRoute: Route.ComponentProps | null = null;
+  const fields: FieldConfig[] = [
+    {
+      type: "date",
+      name: "birthDate",
+      label: "Date of Birth",
+      size: "medium",
+      variant: "outline",
+    },
+    {
+      type: "select",
+      name: "height",
+      label: "Height (cm)",
+      options: Array.from({ length: 81 }, (_, i) => ({
+        value: (140 + i).toString(),
+        label: `${140 + i} cm`,
+      })),
+      props: {
+        placeholder: "Select your height",
+      },
+    },
+    {
+      type: "input",
+      name: "weight",
+      label: "Weight (lbs)",
+      props: { placeholder: "Enter your weight", type: "number" },
+    },
+    {
+      type: "input",
+      name: "zip",
+      label: "Zip code",
+      props: { placeholder: "Enter your zip code" },
+    },
+    {
+      type: "checkbox",
+      name: "nicotine",
+      label: "I currently use nicotine products",
+      props: {},
+    },
+  ];
+
+  const handleSubmit = (values: Record<string, unknown>) => {
+    console.log("Form submitted:", values);
+  };
 
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-      <Checkbox disabled label="Accept Terms" />
-      <Checkbox label="Enable Notifications" />
-      <Checkbox variant="solid" label="Solid Checkbox" />
-      <Checkbox variant="subtle" label="Subtle Checkbox" />
-      <Checkbox variant="outline" label="Outline Checkbox" />
-      <Checkbox indeterminate label="Indeterminate Checkbox" />
-      <Checkbox error label="Error Checkbox" />
-      <Checkbox size="small" variant="solid" label="Solid Checkbox" />
-      <Checkbox size="medium" variant="solid" label="Solid Checkbox" />
-      <Checkbox size="large" variant="solid" label="Solid Checkbox" />
-      <Checkbox
-        label="Enable dark mode"
-        description="Switches the interface to a dark theme."
-        variant="outline"
-        size="small"
-      />
-      <Checkbox
-        label="Enable dark mode"
-        description="Switches the interface to a dark theme."
-        variant="outline"
-        size="medium"
-      />
-      <Checkbox
-        label="Enable dark mode"
-        description="Switches the interface to a dark theme."
-        variant="outline"
-        size="large"
-      />
-    
-      <PasswordInput
-        placeholder="Enter your password"
-        size="small"
-        variant="subtle"
-        helperText="Must be at least 8 characters."
-        error={false}
-      />
-      <PasswordInput
-        placeholder="Enter your password"
-        size="medium"
-        variant="subtle"
-        helperText="Must be at least 8 characters."
-        error={false}
-      />
-      <PasswordInput
-        placeholder="Enter your password"
-        size="large"
-        variant="subtle"
-        helperText="Must be at least 8 characters."
-        error={false}
-      />
-      <DateInput
-        placeholder="Select a date"
-        size="small"
-        variant="subtle"
-        helperText="Select a date from the calendar."
-        error={false}
-      />
-      <DateInput
-        placeholder="Birthdate"
-        size="medium"
-        variant="subtle"
-        helperText="Birthdate."
-        error={false}
-      />
-      <DateInput
-        placeholder="Select a date"
-        size="large"
-        variant="subtle"
-        helperText="Select a date from the calendar."
-        error={false}
-      />
-      <Checkbox
-        label="Enable dark mode"
-        description="Switches the interface to a dark theme."
-        variant="outline"
-        size="large"
-      />
-      <Select
-        label="Choose a fruit"
-        size="small"
-        variant="outline"
-        options={[
-          { label: "Apple", value: "apple" },
-          { label: "Banana", value: "banana" },
-          { label: "Cherry", value: "cherry" },
-        ]}
-      />
-      <Select
-        label="Choose a fruit"
-        variant="subtle"
-        size="medium"
-        options={[
-          { label: "Apple", value: "apple" },
-          { label: "Banana", value: "banana" },
-          { label: "Cherry", value: "cherry" },
-        ]}
-      />
-      <Select
-        label="Choose a fruit"
-        placeholder="Select a fruit"
-        variant="subtle"
-        size="large"
-        options={[
-          { label: "Apple", value: "apple" },
-          { label: "Banana", value: "banana" },
-          { label: "Cherry", value: "cherry" },
-        ]}
+    <div
+      style={{
+        margin: "0 auto",
+        padding: "1rem",
+        gap: "1rem",
+      }}
+    >
+      <FormWrapper
+        title="Get a No Exam Term Life Insurance Quote"
+        description="Apply online in minutes. Get an instant decision. Then personalize your
+        coverage."
+        fields={fields}
+        onSubmit={handleSubmit}
+        submitText="Continue"
+        initialValues={{ nicotine: false }}
       />
     </div>
   );

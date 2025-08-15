@@ -10,7 +10,6 @@ export const SelectWrapper = styled.div`
 export const SelectLabel = styled.label`
   font-size: 0.75rem;
   color: #727272ff;
-  margin-right: 1rem;
   padding-right: 3rem;
 `;
 
@@ -23,10 +22,9 @@ export const StyledSelect = styled.select<{
   border-radius: 0.25rem;
   font-size: 1rem;
   color: #727272ff;
-  background-color: #fff;
+  background-color: transparent;
   cursor: pointer;
   transition: all 0.2s;
-  margin-right: 1rem;
 
   & option:first-child {
     color: #727272ff;
@@ -38,18 +36,18 @@ export const StyledSelect = styled.select<{
         return css`
           border: none;
           background-color: #f5f4f4ff;
-          color: black;
+          color: 6b7280;
         `;
       case "outline":
       default:
         return css`
-          border: 1px solid #c7c6c6ff;
-          background-color: white;
-          color: black;
+          border: 1px solid #ddd;
+          background-color: transparent;
+          color: 6b7280;
 
           &:focus {
             outline: none;
-            border-color: gray;
+            border-color: #ccc;
           }
         `;
     }

@@ -6,7 +6,8 @@ export interface CheckboxProps
   variant?: CheckboxVariant;
   size?: CheckboxSize;
   label?: string;
-  description?: string;
   indeterminate?: boolean;
   error?: boolean;
+  checked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }

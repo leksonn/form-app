@@ -21,7 +21,6 @@ export const Select = ({
 
   return (
     <SelectWrapper>
-      {label && <SelectLabel>{label}</SelectLabel>}
       <StyledSelect
         value={value}
         onChange={handleChange}
