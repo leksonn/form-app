@@ -1,10 +1,7 @@
-import { useState } from "react";
 import {
   CheckboxContainer,
-  CheckboxDescription,
   CheckboxLabel,
   HiddenCheckbox,
-  LabelWrapper,
   StyledCheckbox,
 } from "./Checkbox.styles";
 import type { CheckboxProps } from "./Checkbox.types";
@@ -13,15 +10,16 @@ export const Checkbox = ({
   variant = "outline",
   size = "medium",
   label,
-  description,
   indeterminate = false,
   error = false,
+  checked,
+  onChange,
   ...props
 }: CheckboxProps) => {
-  const [checked, setChecked] = useState(false);
-
-  const handleCheckboxChange = () => {
-    setChecked(!checked);
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e); 
+    }
   };
 
   return (
@@ -40,12 +38,7 @@ export const Checkbox = ({
         $error={error}
         $indeterminate={indeterminate}
       />
-      <LabelWrapper>
-        {label && <CheckboxLabel $size={size}>{label}</CheckboxLabel>}
-        {description && (
-          <CheckboxDescription $size={size}>{description}</CheckboxDescription>
-        )}
-      </LabelWrapper>
+      {label && <CheckboxLabel $size={size}>{label}</CheckboxLabel>}
     </CheckboxContainer>
   );
 };
