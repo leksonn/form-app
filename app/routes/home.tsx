@@ -2,6 +2,9 @@ import {
   FormWrapper,
   type FieldConfig,
 } from "../components/FormWrapper/FormWrapper";
+import { z } from "zod";
+import { formSchema, type FormValues } from "../schemas/formSchema";
+
 
 export default function Home() {
   const fields: FieldConfig[] = [
@@ -64,6 +67,7 @@ export default function Home() {
         onSubmit={handleSubmit}
         submitText="Continue"
         initialValues={{ nicotine: false }}
+        validationSchema={formSchema}
       />
     </div>
   );

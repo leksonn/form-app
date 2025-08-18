@@ -1,5 +1,6 @@
 import type { ChangeEvent, FormEvent } from "react";
 import React, { useState } from "react";
+import { z, type ZodSchema } from "zod";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import type { CheckboxProps } from "../ui/Checkbox/Checkbox.types";
@@ -8,7 +9,12 @@ import { Input } from "../ui/Input";
 import type { InputProps } from "../ui/Input/Input.types";
 import { Select } from "../ui/Select";
 import type { SelectProps } from "../ui/Select/Select.types";
-import { FormContainer, FormField, FormLabel } from "./FormWrapper.styles";
+import {
+  ErrorText,
+  FormContainer,
+  FormField,
+  FormLabel,
+} from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
 
 export type InputField = {
@@ -41,6 +47,7 @@ export type CheckboxField = {
   indeterminate?: boolean;
   error?: boolean;
   description?: string;
+  helperText?: string;
   props?: Omit<CheckboxProps, "checked" | "onChange">;
 };
 
@@ -52,6 +59,7 @@ export type SelectField = {
   variant?: SelectProps["variant"];
   size?: SelectProps["size"];
   placeholder?: string;
+  helperText?: string;
   props?: Omit<SelectProps, "value" | "onChange" | "options">;
 };
 
@@ -68,7 +76,7 @@ interface FormWrapperProps {
   onSubmit: (values: Record<string, unknown>) => void;
   submitText?: string;
   initialValues?: Record<string, unknown>;
-  validationSchema?: any;
+  validationSchema?: ZodSchema<any>;
 }
 
 export const FormWrapper: React.FC<FormWrapperProps> = ({
@@ -82,80 +90,141 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 }) => {
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(initialValues);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
+  const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
   const handleChange = (name: string, formValue: unknown) => {
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: formValue,
     }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
+  const validateField = (name: string) => {
+    if (!validationSchema) return;
+
+    const fieldValue = formValues[name];
+
+    if (fieldValue === undefined || fieldValue === "") {
+      const fieldConfig = fields.find((f) => f.name === name);
+      if (fieldConfig) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: `${fieldConfig.label} is required`,
+        }));
+      }
+      return;
+    }
+
+    try {
+      const objectSchema = validationSchema as z.ZodObject<any>;
+      const fieldSchema = z.object({
+        [name]: objectSchema.shape[name],
+      });
+
+      fieldSchema.parse({ [name]: fieldValue });
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrors((prev) => ({ ...prev, [name]: err.issues[0].message }));
+      }
+    }
+  };
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validationSchema) {
+      const requiredErrors: Partial<Record<string, string>> = {};
+
+      fields.forEach((field) => {
+        const fieldName = field.name;
+        if (
+          typeof fieldName === "string" &&
+          !formValues[fieldName] &&
+          fieldName !== "nicotine"
+        ) {
+          requiredErrors[fieldName] = `${field.label} is required`;
+        }
+      });
+
+      if (Object.keys(requiredErrors).length > 0) {
+        setErrors(requiredErrors);
+        return;
+      }
+
       try {
         validationSchema.parse(formValues);
         setErrors({});
-      } catch (err: any) {
-        const newErrors: Record<string, string> = {};
-        if (err.errors) {
-          err.errors.forEach((error: any) => {
-            newErrors[error.path[0]] = error.message;
+        onSubmit(formValues);
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          const validationErrors: Partial<Record<string, string>> = {};
+          err.issues.forEach((issue) => {
+            const path = issue.path[0];
+            if (typeof path === "string") {
+              validationErrors[path] = issue.message;
+            }
           });
+          setErrors(validationErrors);
         }
-        setErrors(newErrors);
-        return;
       }
+    } else {
+      onSubmit(formValues);
     }
-
-    onSubmit(formValues);
   };
-
   const renderField = (field: FieldConfig) => {
+    const fieldError = errors[field.name];
+
     switch (field.type) {
       case "input":
         return (
-          <Input
-            key={field.name}
-            value={(formValues[field.name] as string) || ""}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleChange(field.name, e.target.value)
-            }
-            error={Boolean(errors[field.name])}
-            {...field.props}
-          />
+          <div key={field.name}>
+            <Input
+              value={(formValues[field.name] as string) || ""}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleChange(field.name, e.target.value)
+              }
+              onBlur={() => validateField(field.name)}
+              error={Boolean(fieldError)}
+              helperText={fieldError}
+              {...field.props}
+            />
+          </div>
         );
 
       case "date":
         return (
-          <DateInput
-            key={field.name}
-            value={(formValues[field.name] as string) || ""}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleChange(field.name, e.target.value)
-            }
-            error={Boolean(errors[field.name])}
-            helperText={field.helperText}
-            size={field.size}
-            variant={field.variant}
-            {...field.props}
-          />
+          <div key={field.name}>
+            <DateInput
+              value={(formValues[field.name] as string) || ""}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleChange(field.name, e.target.value)
+              }
+              onBlur={() => validateField(field.name)}
+              error={Boolean(fieldError)}
+              helperText={fieldError}
+              size={field.size}
+              variant={field.variant}
+              {...field.props}
+            />
+          </div>
         );
 
       case "checkbox":
         return (
-          <Checkbox
-            key={field.name}
-            label={field.label}
-            checked={Boolean(formValues[field.name])}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              handleChange(field.name, e.target.checked)
-            }
-            error={Boolean(errors[field.name])}
-            {...field.props}
-          />
+          <div key={field.name}>
+            <Checkbox
+              label={field.label}
+              checked={Boolean(formValues[field.name])}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleChange(field.name, e.target.checked)
+              }
+              error={Boolean(fieldError)}
+              helperText={fieldError}
+              {...field.props}
+            />
+          </div>
         );
 
       case "select":
@@ -168,7 +237,12 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
             onChange={(e: ChangeEvent<HTMLSelectElement>) =>
               handleChange(field.name, e.target.value)
             }
-            {...field.props}
+            onBlur={() => validateField(field.name)}
+            error={Boolean(errors[field.name])}
+            helperText={errors[field.name]}
+            placeholder={field.props?.placeholder}
+            variant={field.variant}
+            size={field.size}
           />
         );
 
@@ -179,7 +253,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <FormHeader title={title} description={description}/>
+      <FormHeader title={title} description={description} />
 
       {fields.map((field) => (
         <FormField key={field.name}>
@@ -187,6 +261,9 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
             <FormLabel>{field.label}</FormLabel>
           )}
           {renderField(field)}
+          {field.type === "checkbox" && errors[field.name] && (
+            <ErrorText>{errors[field.name]}</ErrorText>
+          )}
         </FormField>
       ))}
 
@@ -195,7 +272,6 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
         colorScheme="green"
         variant="solid"
         size="large"
-        isLoading={false}
         style={{ width: "100%" }}
       >
         {submitText}

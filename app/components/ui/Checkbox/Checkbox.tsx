@@ -12,6 +12,7 @@ export const Checkbox = ({
   label,
   indeterminate = false,
   error = false,
+  helperText,
   checked,
   onChange,
   ...props
