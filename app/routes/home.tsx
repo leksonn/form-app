@@ -47,8 +47,9 @@ export default function Home() {
     },
   ];
 
-  const handleSubmit = (values: Record<string, unknown>) => {
+  const handleSubmit = (values: Record<string, unknown>, reset: () => void) => {
     console.log("Form submitted:", values);
+    reset();
     showSnackbar("Form submitted successfully!");
   };
 

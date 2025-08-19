@@ -11,6 +11,8 @@ import type { SelectProps } from "../ui/Select/Select.types";
 import { FormContainer, FormField, FormLabel } from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
 
+type ResetForm = () => void;
+
 export type InputField = {
   type: "input";
   name: string;
@@ -65,7 +67,7 @@ interface FormWrapperProps {
   title?: string;
   description?: string;
   fields: FieldConfig[];
-  onSubmit: (values: Record<string, unknown>) => void;
+  onSubmit: (values: Record<string, unknown>, reset: ResetForm) => void;
   submitText?: string;
   initialValues?: Record<string, unknown>;
   validationSchema?: any;
@@ -83,6 +85,10 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const resetForm = () => {
+    setFormValues(initialValues);
+  };
 
   const handleChange = (name: string, formValue: unknown) => {
     setFormValues((prevValues) => ({
@@ -110,7 +116,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
       }
     }
 
-    onSubmit(formValues);
+    onSubmit(formValues, resetForm);
   };
 
   const renderField = (field: FieldConfig) => {
@@ -179,7 +185,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <FormHeader title={title} description={description}/>
+      <FormHeader title={title} description={description} />
 
       {fields.map((field) => (
         <FormField key={field.name}>
