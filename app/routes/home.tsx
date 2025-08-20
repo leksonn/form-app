@@ -20,9 +20,7 @@ export default function Home() {
         value: (140 + i).toString(),
         label: `${140 + i} cm`,
       })),
-      props: {
-        placeholder: "Select your height",
-      },
+      placeholder: "Select your height",
     },
     {
       type: "input",

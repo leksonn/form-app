@@ -3,10 +3,10 @@ import React, { useState } from "react";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import type { CheckboxProps } from "../ui/Checkbox/Checkbox.types";
+import { CustomSelect } from "../ui/CustomSelect";
 import { DateInput } from "../ui/DateInput";
 import { Input } from "../ui/Input";
 import type { InputProps } from "../ui/Input/Input.types";
-import { Select } from "../ui/Select";
 import type { SelectProps } from "../ui/Select/Select.types";
 import { FormContainer, FormField, FormLabel } from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
@@ -160,15 +160,13 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 
       case "select":
         return (
-          <Select
+          <CustomSelect
             key={field.name}
             label={field.label}
             value={(formValues[field.name] as string) || ""}
             options={field.options}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              handleChange(field.name, e.target.value)
-            }
-            {...field.props}
+            onChange={(val) => handleChange(field.name, val)}
+            placeholder={field.placeholder}
           />
         );
 
@@ -179,7 +177,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <FormHeader title={title} description={description}/>
+      <FormHeader title={title} description={description} />
 
       {fields.map((field) => (
         <FormField key={field.name}>
