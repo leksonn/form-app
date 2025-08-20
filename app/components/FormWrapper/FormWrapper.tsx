@@ -10,6 +10,9 @@ import type { InputProps } from "../ui/Input/Input.types";
 import type { SelectProps } from "../ui/Select/Select.types";
 import { FormContainer, FormField, FormLabel } from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
+import { CustomMultiSelect } from "../ui/CustomMulitSelect";
+import type { CustomMultiSelectProps } from "../ui/CustomMulitSelect/CustomMultiSelect";
+
 
 export type InputField = {
   type: "input";
@@ -55,11 +58,20 @@ export type SelectField = {
   props?: Omit<SelectProps, "value" | "onChange" | "options">;
 };
 
+export type MultiSelectField = {
+  type: "multiselect";
+  name: string;
+  label?: string;
+  options: CustomMultiSelectProps["options"];
+  placeholder?: string;
+};
+
 export type FieldConfig =
   | InputField
   | DateInputField
   | CheckboxField
-  | SelectField;
+  | SelectField
+  | MultiSelectField;
 
 interface FormWrapperProps {
   title?: string;
@@ -168,6 +180,18 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
             onChange={(val) => handleChange(field.name, val)}
             placeholder={field.placeholder}
           />
+        );
+
+      case "multiselect":
+        return(
+          <CustomMultiSelect
+            key={field.name}
+            label={field.label}
+            value={(formValues[field.name] as string[]) || []}
+            options={field.options}
+            onChange={(vals) => handleChange(field.name, vals)}
+            placeholder={field.placeholder}
+            />
         );
 
       default:
