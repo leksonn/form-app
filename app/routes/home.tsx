@@ -1,10 +1,18 @@
+import { useState } from "react";
 import {
   FormWrapper,
   type FieldConfig,
 } from "../components/FormWrapper/FormWrapper";
 
 export default function Home() {
-  const fields: FieldConfig[] = [
+  const [currentFormValues, setCurrentFormValues] = useState<
+    Record<string, unknown>
+  >({
+    nicotine: false,
+    medicalHistory: false,
+  });
+
+  const baseFields: FieldConfig[] = [
     {
       type: "date",
       name: "birthDate",
@@ -42,6 +50,36 @@ export default function Home() {
       label: "I currently use nicotine products",
       props: {},
     },
+    {
+      type: "checkbox",
+      name: "medicalHistory",
+      label: "I have a relevant medical history",
+      props: {},
+    },
+  ];
+
+  const medicalHistoryFields: FieldConfig[] = [
+    {
+      type: "select",
+      name: "surgeries",
+      label: "Past Surgeries",
+      options: [
+        { value: "bypass", label: "Bypass Surgery" },
+        { value: "appendectomy", label: "Appendectomy" },
+      ],
+      placeholder: "Select surgery",
+    },
+    {
+      type: "checkbox",
+      name: "prescriptions",
+      label: "I currently use prescriptions",
+      props: {},
+    },
+  ];
+
+  const finalFields = [
+    ...baseFields,
+    ...(currentFormValues.medicalHistory ? medicalHistoryFields : []),
   ];
 
   const handleSubmit = (values: Record<string, unknown>) => {
@@ -60,10 +98,11 @@ export default function Home() {
         title="Get a No Exam Term Life Insurance Quote"
         description="Apply online in minutes. Get an instant decision. Then personalize your
         coverage."
-        fields={fields}
+        fields={finalFields}
         onSubmit={handleSubmit}
         submitText="Continue"
-        initialValues={{ nicotine: false }}
+        initialValues={currentFormValues}
+        onValuesChange={setCurrentFormValues}
       />
     </div>
   );
