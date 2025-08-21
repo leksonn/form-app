@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from "react";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import { z, type ZodSchema } from "zod";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
@@ -179,7 +179,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
     switch (field.type) {
       case "input":
         return (
-          <div key={field.name}>
+          <Fragment key={field.name}>
             <Input
               value={(formValues[field.name] as string) || ""}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -190,12 +190,12 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
               helperText={fieldError}
               {...field.props}
             />
-          </div>
+          </Fragment>
         );
 
       case "date":
         return (
-          <div key={field.name}>
+          <Fragment key={field.name}>
             <DateInput
               value={(formValues[field.name] as string) || ""}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -208,12 +208,12 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
               variant={field.variant}
               {...field.props}
             />
-          </div>
+          </Fragment>
         );
 
       case "checkbox":
         return (
-          <div key={field.name}>
+          <Fragment key={field.name}>
             <Checkbox
               label={field.label}
               checked={Boolean(formValues[field.name])}
@@ -224,26 +224,27 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
               helperText={fieldError}
               {...field.props}
             />
-          </div>
+          </Fragment>
         );
 
       case "select":
         return (
-          <Select
-            key={field.name}
-            label={field.label}
-            value={(formValues[field.name] as string) || ""}
-            options={field.options}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              handleChange(field.name, e.target.value)
-            }
-            onBlur={() => validateField(field.name)}
-            error={Boolean(errors[field.name])}
-            helperText={errors[field.name]}
-            placeholder={field.props?.placeholder}
-            variant={field.variant}
-            size={field.size}
-          />
+          <Fragment key={field.name}>
+            <Select
+              label={field.label}
+              value={(formValues[field.name] as string) || ""}
+              options={field.options}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                handleChange(field.name, e.target.value)
+              }
+              onBlur={() => validateField(field.name)}
+              error={Boolean(errors[field.name])}
+              helperText={errors[field.name]}
+              placeholder={field.props?.placeholder}
+              variant={field.variant}
+              size={field.size}
+            />
+          </Fragment>
         );
 
       default:
