@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from "react";
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import { z, type ZodSchema } from "zod";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
@@ -69,17 +69,26 @@ export type FieldConfig =
   | CheckboxField
   | SelectField;
 
-interface FormWrapperProps {
+export type InferFormValues<TFields extends FieldConfig[]> = {
+  [K in TFields[number]["name"]]: Extract<
+    TFields[number],
+    { name: K }
+  >["type"] extends "checkbox"
+    ? boolean
+    : string;
+};
+
+interface FormWrapperProps<TFormValues = Record<string, unknown>> {
   title?: string;
   description?: string;
   fields: FieldConfig[];
-  onSubmit: (values: Record<string, unknown>) => void;
+  onSubmit: (values: TFormValues) => void;
   submitText?: string;
-  initialValues?: Record<string, unknown>;
-  validationSchema?: ZodSchema<any>;
+  initialValues?: Partial<TFormValues>;
+  validationSchema?: ZodSchema<TFormValues>;
 }
 
-export const FormWrapper: React.FC<FormWrapperProps> = ({
+export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   title,
   description,
   fields = [],
@@ -87,35 +96,32 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   submitText = "Submit",
   initialValues = {},
   validationSchema,
-}) => {
-  const [formValues, setFormValues] =
-    useState<Record<string, unknown>>(initialValues);
+}: FormWrapperProps<TFormValues>) => {
+  const [formValues, setFormValues] = useState<Partial<TFormValues>>(
+    initialValues as Partial<TFormValues>
+  );
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
-  const handleChange = (name: string, formValue: unknown) => {
+  const handleChange = <K extends keyof TFormValues>(
+    name: K,
+    value: TFormValues[K]
+  ) => {
     setFormValues((prevValues) => ({
       ...prevValues,
-      [name]: formValue,
+      [name]: value,
     }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
+
+    if (errors[name as string]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name as string]: "",
+      }));
     }
   };
 
   const validateField = (name: string) => {
     if (!validationSchema) return;
 
-    const fieldValue = formValues[name];
-
-    if (fieldValue === undefined || fieldValue === "") {
-      const fieldConfig = fields.find((f) => f.name === name);
-      if (fieldConfig) {
-        setErrors((prev) => ({
-          ...prev,
-          [name]: `${fieldConfig.label} is required`,
-        }));
-      }
-      return;
-    }
+    const fieldValue = formValues[name as keyof TFormValues];
 
     try {
       const objectSchema = validationSchema as z.ZodObject<any>;
@@ -123,40 +129,65 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
         [name]: objectSchema.shape[name],
       });
 
-      fieldSchema.parse({ [name]: fieldValue });
+      const valueToValidate = fieldValue === undefined ? "" : fieldValue;
+      fieldSchema.parse({ [name]: valueToValidate });
+
       setErrors((prev) => ({ ...prev, [name]: "" }));
     } catch (err) {
       if (err instanceof z.ZodError) {
-        setErrors((prev) => ({ ...prev, [name]: err.issues[0].message }));
+        setErrors((prev) => ({
+          ...prev,
+          [name]: err.issues[0].message,
+        }));
       }
     }
   };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validationSchema) {
-      const requiredErrors: Partial<Record<string, string>> = {};
+      const newErrors: Partial<Record<string, string>> = {};
 
       fields.forEach((field) => {
-        const fieldName = field.name;
-        if (
-          typeof fieldName === "string" &&
-          !formValues[fieldName] &&
-          fieldName !== "nicotine"
-        ) {
-          requiredErrors[fieldName] = `${field.label} is required`;
+        try {
+          const objectSchema = validationSchema as z.ZodObject<any>;
+          const fieldSchema = z.object({
+            [field.name]: objectSchema.shape[field.name],
+          });
+
+          const fieldValue = formValues[field.name as keyof TFormValues];
+          const valueToValidate = fieldValue === undefined ? "" : fieldValue;
+
+          fieldSchema.parse({ [field.name]: valueToValidate });
+        } catch (err) {
+          if (err instanceof z.ZodError) {
+            newErrors[field.name] = err.issues[0].message;
+          }
         }
       });
 
-      if (Object.keys(requiredErrors).length > 0) {
-        setErrors(requiredErrors);
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
         return;
       }
 
       try {
-        validationSchema.parse(formValues);
+        const completeFormValues: Record<string, unknown> = {};
+
+        fields.forEach((field) => {
+          const value = formValues[field.name as keyof TFormValues];
+          if (field.type === "checkbox") {
+            completeFormValues[field.name] =
+              value !== undefined ? value : false;
+          } else {
+            completeFormValues[field.name] = value !== undefined ? value : "";
+          }
+        });
+
+        const validatedValues = validationSchema.parse(completeFormValues);
         setErrors({});
-        onSubmit(formValues);
+        onSubmit(validatedValues as TFormValues);
       } catch (err) {
         if (err instanceof z.ZodError) {
           const validationErrors: Partial<Record<string, string>> = {};
@@ -170,9 +201,10 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
         }
       }
     } else {
-      onSubmit(formValues);
+      onSubmit(formValues as TFormValues);
     }
   };
+
   const renderField = (field: FieldConfig) => {
     const fieldError = errors[field.name];
 
@@ -181,9 +213,14 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
         return (
           <Fragment key={field.name}>
             <Input
-              value={(formValues[field.name] as string) || ""}
+              value={
+                (formValues[field.name as keyof TFormValues] as string) || ""
+              }
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                handleChange(field.name, e.target.value)
+                handleChange(
+                  field.name as keyof TFormValues,
+                  e.target.value as TFormValues[keyof TFormValues]
+                )
               }
               onBlur={() => validateField(field.name)}
               error={Boolean(fieldError)}
@@ -197,9 +234,14 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
         return (
           <Fragment key={field.name}>
             <DateInput
-              value={(formValues[field.name] as string) || ""}
+              value={
+                (formValues[field.name as keyof TFormValues] as string) || ""
+              }
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                handleChange(field.name, e.target.value)
+                handleChange(
+                  field.name as keyof TFormValues,
+                  e.target.value as TFormValues[keyof TFormValues]
+                )
               }
               onBlur={() => validateField(field.name)}
               error={Boolean(fieldError)}
@@ -216,9 +258,12 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
           <Fragment key={field.name}>
             <Checkbox
               label={field.label}
-              checked={Boolean(formValues[field.name])}
+              checked={Boolean(formValues[field.name as keyof TFormValues])}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                handleChange(field.name, e.target.checked)
+                handleChange(
+                  field.name as keyof TFormValues,
+                  e.target.checked as TFormValues[keyof TFormValues]
+                )
               }
               error={Boolean(fieldError)}
               helperText={fieldError}
@@ -232,10 +277,15 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
           <Fragment key={field.name}>
             <Select
               label={field.label}
-              value={(formValues[field.name] as string) || ""}
+              value={
+                (formValues[field.name as keyof TFormValues] as string) || ""
+              }
               options={field.options}
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                handleChange(field.name, e.target.value)
+                handleChange(
+                  field.name as keyof TFormValues,
+                  e.target.value as TFormValues[keyof TFormValues]
+                )
               }
               onBlur={() => validateField(field.name)}
               error={Boolean(errors[field.name])}
@@ -255,7 +305,6 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   return (
     <FormContainer onSubmit={handleSubmit}>
       <FormHeader title={title} description={description} />
-
       {fields.map((field) => (
         <FormField key={field.name}>
           {field.label && field.type !== "checkbox" && (
@@ -267,7 +316,6 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
           )}
         </FormField>
       ))}
-
       <Button
         type="submit"
         colorScheme="green"
