@@ -1,8 +1,6 @@
 import { useState } from "react";
-import {
-  FormWrapper,
-  type FieldConfig,
-} from "../components/FormWrapper/FormWrapper";
+import { FormWrapper } from "../components/FormWrapper/FormWrapper";
+import { BASE_FIELDS, MEDICAL_HISTORY_FIELDS } from "../config";
 
 export default function Home() {
   const [currentFormValues, setCurrentFormValues] = useState<
@@ -12,74 +10,9 @@ export default function Home() {
     medicalHistory: false,
   });
 
-  const baseFields: FieldConfig[] = [
-    {
-      type: "date",
-      name: "birthDate",
-      label: "Date of Birth",
-      size: "medium",
-      variant: "outline",
-    },
-    {
-      type: "select",
-      name: "height",
-      label: "Height (cm)",
-      options: Array.from({ length: 81 }, (_, i) => ({
-        value: (140 + i).toString(),
-        label: `${140 + i} cm`,
-      })),
-      props: {
-        placeholder: "Select your height",
-      },
-    },
-    {
-      type: "input",
-      name: "weight",
-      label: "Weight (lbs)",
-      props: { placeholder: "Enter your weight", type: "number" },
-    },
-    {
-      type: "input",
-      name: "zip",
-      label: "Zip code",
-      props: { placeholder: "Enter your zip code" },
-    },
-    {
-      type: "checkbox",
-      name: "nicotine",
-      label: "I currently use nicotine products",
-      props: {},
-    },
-    {
-      type: "checkbox",
-      name: "medicalHistory",
-      label: "I have a relevant medical history",
-      props: {},
-    },
-  ];
-
-  const medicalHistoryFields: FieldConfig[] = [
-    {
-      type: "select",
-      name: "surgeries",
-      label: "Past Surgeries",
-      options: [
-        { value: "bypass", label: "Bypass Surgery" },
-        { value: "appendectomy", label: "Appendectomy" },
-      ],
-      placeholder: "Select surgery",
-    },
-    {
-      type: "checkbox",
-      name: "prescriptions",
-      label: "I currently use prescriptions",
-      props: {},
-    },
-  ];
-
   const finalFields = [
-    ...baseFields,
-    ...(currentFormValues.medicalHistory ? medicalHistoryFields : []),
+    ...BASE_FIELDS,
+    ...(currentFormValues.medicalHistory ? MEDICAL_HISTORY_FIELDS : []),
   ];
 
   const handleSubmit = (values: Record<string, unknown>) => {
