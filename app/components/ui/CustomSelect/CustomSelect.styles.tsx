@@ -57,6 +57,9 @@ export const OptionItem = styled.li<{ $isSelected: boolean }>`
   padding: 0.5rem 0.75rem;
   transition: background-color 0.1s;
   color: #1f2937;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 
   &:hover {
     background-color: #f3f4f6;
@@ -103,4 +106,22 @@ export const ArrowIcon = styled.span<{ $isOpen: boolean }>`
 export const Placeholder = styled.span`
   color: gray;
   display: block;
+`;
+
+export const MultiSelectTagsWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const MultiSelectTag = styled.span`
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background-color: #d3d3d3ff;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #3b3a3aff;
 `;

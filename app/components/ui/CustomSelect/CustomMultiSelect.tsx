@@ -1,15 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
-  MultiSelectWrapper,
-  MultiSelectTrigger,
-  MultiSelectTagsWrapper,
+  ArrowIcon,
   MultiSelectTag,
-  MultiSelectPlaceholder,
-  MultiSelectOptionsList,
-  MultiSelectOptionItem,
-  MultiSelectLabel,
-  ArrowIcon
-} from './CustomMultiSelect.styles';
+  MultiSelectTagsWrapper,
+  OptionItem,
+  OptionsList,
+  Placeholder,
+  SelectTrigger,
+  SelectWrapper,
+} from "./CustomSelect.styles";
 
 interface Option {
   value: string;
@@ -24,13 +23,22 @@ export interface CustomMultiSelectProps {
   placeholder?: string;
 }
 
-export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({ label, options, value = [], onChange, placeholder }) => {
+export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
+  label,
+  options,
+  value = [],
+  onChange,
+  placeholder,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     }
@@ -49,46 +57,42 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({ label, opt
     }
   };
 
-  const selectedOptions = options.filter(option => value.includes(option.value));
+  const selectedOptions = options.filter((option) =>
+    value.includes(option.value)
+  );
 
   return (
-    <MultiSelectWrapper ref={wrapperRef}>
-      <MultiSelectTrigger onClick={() => setIsOpen(!isOpen)}>
+    <SelectWrapper ref={wrapperRef}>
+      <SelectTrigger onClick={() => setIsOpen(!isOpen)}>
         <MultiSelectTagsWrapper>
           {selectedOptions.length > 0 ? (
             selectedOptions.map((option) => (
-              <MultiSelectTag key={option.value}>
-                {option.label}
-              </MultiSelectTag>
+              <MultiSelectTag key={option.value}>{option.label}</MultiSelectTag>
             ))
           ) : (
-            <MultiSelectPlaceholder>{placeholder || "Select options"}</MultiSelectPlaceholder>
+            <Placeholder>{placeholder || "Select options"}</Placeholder>
           )}
         </MultiSelectTagsWrapper>
         <ArrowIcon $isOpen={isOpen} />
-      </MultiSelectTrigger>
+      </SelectTrigger>
 
       {isOpen && (
-        <MultiSelectOptionsList>
+        <OptionsList>
           {options.map((option) => {
             const isSelected = value.includes(option.value);
             return (
-              <MultiSelectOptionItem
+              <OptionItem
                 key={option.value}
                 onClick={() => handleOptionClick(option.value)}
                 $isSelected={isSelected}
               >
-                <input
-                  type="checkbox"
-                  readOnly
-                  checked={isSelected}
-                />
+                <input type="checkbox" readOnly checked={isSelected} />
                 {option.label}
-              </MultiSelectOptionItem>
+              </OptionItem>
             );
           })}
-        </MultiSelectOptionsList>
+        </OptionsList>
       )}
-    </MultiSelectWrapper>
+    </SelectWrapper>
   );
 };
