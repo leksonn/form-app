@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { FormWrapper } from "../components/FormWrapper/FormWrapper";
 import { BASE_FIELDS, MEDICAL_HISTORY_FIELDS } from "../config";
+import { useSnackbar } from "../root";
 
 export default function Home() {
+  const { showSnackbar } = useSnackbar();
+
   const [currentFormValues, setCurrentFormValues] = useState<
     Record<string, unknown>
   >({
@@ -15,8 +18,10 @@ export default function Home() {
     ...(currentFormValues.medicalHistory ? MEDICAL_HISTORY_FIELDS : []),
   ];
 
-  const handleSubmit = (values: Record<string, unknown>) => {
+  const handleSubmit = (values: Record<string, unknown>, reset: () => void) => {
     console.log("Form submitted:", values);
+    reset();
+    showSnackbar("Form submitted successfully!");
   };
 
   return (

@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
 import type { CheckboxProps } from "../ui/Checkbox/Checkbox.types";
+import { CustomMultiSelect, CustomSelect } from "../ui/CustomSelect";
+import type { CustomMultiSelectProps } from "../ui/CustomSelect/CustomMultiSelect";
 import { DateInput } from "../ui/DateInput";
 import { Input } from "../ui/Input";
 import type { InputProps } from "../ui/Input/Input.types";
-import { Select } from "../ui/Select";
 import type { SelectProps } from "../ui/Select/Select.types";
 import { FormContainer, FormField, FormLabel } from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
+
+type ResetForm = () => void;
 
 export type InputField = {
   type: "input";
@@ -55,17 +58,26 @@ export type SelectField = {
   props?: Omit<SelectProps, "value" | "onChange" | "options">;
 };
 
+export type MultiSelectField = {
+  type: "multiselect";
+  name: string;
+  label?: string;
+  options: CustomMultiSelectProps["options"];
+  placeholder?: string;
+};
+
 export type FieldConfig =
   | InputField
   | DateInputField
   | CheckboxField
-  | SelectField;
+  | SelectField
+  | MultiSelectField;
 
 interface FormWrapperProps {
   title?: string;
   description?: string;
   fields: FieldConfig[];
-  onSubmit: (values: Record<string, unknown>) => void;
+  onSubmit: (values: Record<string, unknown>, reset: ResetForm) => void;
   submitText?: string;
   initialValues?: Record<string, unknown>;
   validationSchema?: any;
@@ -85,6 +97,10 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(initialValues);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const resetForm = () => {
+    setFormValues(initialValues);
+  };
 
   const handleChange = (name: string, formValue: unknown) => {
     setFormValues((prevValues) => {
@@ -118,7 +134,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
       }
     }
 
-    onSubmit(formValues);
+    onSubmit(formValues, resetForm);
   };
 
   const renderField = (field: FieldConfig) => {
@@ -168,14 +184,24 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
 
       case "select":
         return (
-          <Select
+          <CustomSelect
             key={field.name}
             label={field.label}
             value={(formValues[field.name] as string) || ""}
             options={field.options}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              handleChange(field.name, e.target.value)
-            }
+            onChange={(val) => handleChange(field.name, val)}
+            placeholder={field.placeholder}
+          />
+        );
+
+      case "multiselect":
+        return (
+          <CustomMultiSelect
+            key={field.name}
+            label={field.label}
+            value={(formValues[field.name] as string[]) || []}
+            options={field.options}
+            onChange={(vals) => handleChange(field.name, vals)}
             placeholder={field.placeholder}
           />
         );

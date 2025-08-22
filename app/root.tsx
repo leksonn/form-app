@@ -1,3 +1,4 @@
+import { createContext, useContext, useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -6,9 +7,16 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import "./app.css";
+import { Snackbar } from "./components/ui/Snackbar/Snackbar";
 
 import type { Route } from "./+types/root";
-import "./app.css";
+
+const SnackbarContext = createContext({
+  showSnackbar: (message: string) => {},
+});
+
+export const useSnackbar = () => useContext(SnackbarContext);
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +50,24 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const [snackbar, setSnackbarState] = useState({
+    message: "",
+    isVisible: false,
+  });
+
+  const showSnackbar = (message: string) => {
+    setSnackbarState({ message, isVisible: true });
+    setTimeout(() => {
+      setSnackbarState({ message: "", isVisible: false });
+    }, 3000);
+  };
+
+  return (
+    <SnackbarContext.Provider value={{ showSnackbar }}>
+      <Outlet />
+      <Snackbar message={snackbar.message} isVisible={snackbar.isVisible} />
+    </SnackbarContext.Provider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
