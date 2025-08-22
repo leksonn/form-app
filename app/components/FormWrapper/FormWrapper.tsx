@@ -81,6 +81,7 @@ interface FormWrapperProps {
   submitText?: string;
   initialValues?: Record<string, unknown>;
   validationSchema?: any;
+  onValuesChange?: (values: Record<string, unknown>) => void;
 }
 
 export const FormWrapper: React.FC<FormWrapperProps> = ({
@@ -91,6 +92,7 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   submitText = "Submit",
   initialValues = {},
   validationSchema,
+  onValuesChange,
 }) => {
   const [formValues, setFormValues] =
     useState<Record<string, unknown>>(initialValues);
@@ -101,10 +103,16 @@ export const FormWrapper: React.FC<FormWrapperProps> = ({
   };
 
   const handleChange = (name: string, formValue: unknown) => {
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      [name]: formValue,
-    }));
+    setFormValues((prevValues) => {
+      const newValues = {
+        ...prevValues,
+        [name]: formValue,
+      };
+      if (onValuesChange) {
+        onValuesChange(newValues);
+      }
+      return newValues;
+    });
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
