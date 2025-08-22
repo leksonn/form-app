@@ -11,7 +11,7 @@ export const Snackbar: React.FC<SnackbarProps> = ({ message, isVisible }) => {
     return null;
   }
 
-  return <StyledSnackbar $isVisible= {isVisible}>{message}</StyledSnackbar>;
+  return <StyledSnackbar $isVisible={isVisible}>{message}</StyledSnackbar>;
 };
 
 Snackbar.displayName = "Snackbar";
