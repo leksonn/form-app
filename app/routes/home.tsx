@@ -2,8 +2,11 @@ import {
   FormWrapper,
   type FieldConfig,
 } from "../components/FormWrapper/FormWrapper";
+import { useSnackbar } from "../root";
 
 export default function Home() {
+  const { showSnackbar } = useSnackbar();
+
   const fields: FieldConfig[] = [
     {
       type: "date",
@@ -57,8 +60,10 @@ export default function Home() {
     },
   ];
 
-  const handleSubmit = (values: Record<string, unknown>) => {
+  const handleSubmit = (values: Record<string, unknown>, reset: () => void) => {
     console.log("Form submitted:", values);
+    reset();
+    showSnackbar("Form submitted successfully!");
   };
 
   return (
