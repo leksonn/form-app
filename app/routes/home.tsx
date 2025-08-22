@@ -23,9 +23,22 @@ export default function Home() {
         value: (140 + i).toString(),
         label: `${140 + i} cm`,
       })),
-      props: {
-        placeholder: "Select your height",
-      },
+      placeholder: "Select your height",
+    },
+    {
+      type: "multiselect",
+      name: "medical conditions",
+      label: "Existing Medical Conditions",
+      options: [
+        { value: "diabetes", label: "Diabetes" },
+        { value: "heart disease", label: "Heart Disease" },
+        { value: "high blood pressure", label: "High Blood Pressure" },
+        { value: "asthma", label: "Asthma" },
+        { value: "cancer", label: "Cancer" },
+        { value: "kidney disease", label: "Kidney Disease" },
+        { value: "chronic pain", label: "Chronic Pain" },
+      ],
+      placeholder: "Select medical conditions",
     },
     {
       type: "input",
