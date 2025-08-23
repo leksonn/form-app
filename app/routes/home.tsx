@@ -1,68 +1,41 @@
-import {
-  FormWrapper,
-  type FieldConfig,
-} from "../components/FormWrapper/FormWrapper";
+import { useState } from "react";
+import { FormWrapper } from "../components/FormWrapper/FormWrapper";
+import { BASE_FIELDS, MEDICAL_HISTORY_FIELDS } from "../config";
+import { useSnackbar } from "../root";
 import { formSchema, type FormValues } from "../schemas/formSchema";
 
-const fields: FieldConfig[] = [
-  {
-    type: "date",
-    name: "birthDate",
-    label: "Date of Birth",
-    size: "medium",
-    variant: "outline",
-  },
-  {
-    type: "select",
-    name: "height",
-    label: "Height (cm)",
-    options: Array.from({ length: 81 }, (_, i) => ({
-      value: (140 + i).toString(),
-      label: `${140 + i} cm`,
-    })),
-    props: {
-      placeholder: "Select your height",
-    },
-  },
-  {
-    type: "input",
-    name: "weight",
-    label: "Weight (lbs)",
-    props: {
-      placeholder: "Enter your weight",
-      type: "number",
-    },
-  },
-  {
-    type: "input",
-    name: "zip",
-    label: "Zip code",
-    props: {
-      placeholder: "Enter your zip code",
-    },
-  },
-  {
-    type: "checkbox",
-    name: "nicotine",
-    label: "I currently use nicotine products",
-    props: {},
-  },
-];
-
 export default function Home() {
-  const handleSubmit = (values: FormValues) => {
+  const { showSnackbar } = useSnackbar();
+
+  const [currentFormValues, setCurrentFormValues] = useState<
+    Record<string, unknown>
+  >({
+    nicotine: false,
+    medicalHistory: false,
+  });
+
+  const finalFields = [
+    ...BASE_FIELDS,
+    ...(currentFormValues.medicalHistory ? MEDICAL_HISTORY_FIELDS : []),
+  ];
+
+  const handleSubmit = (values: FormValues, reset: () => void) => {
     console.log("Form submitted:", values);
+    reset();
+    showSnackbar("Form submitted successfully!");
   };
 
   return (
     <div style={{ margin: "0 auto", padding: "1rem", gap: "1rem" }}>
       <FormWrapper<FormValues>
         title="Get a No Exam Term Life Insurance Quote"
-        description="Apply online in minutes. Get an instant decision. Then personalize your coverage."
-        fields={fields}
+        description="Apply online in minutes. Get an instant decision. Then personalize your
+        coverage."
+        fields={finalFields}
         onSubmit={handleSubmit}
         submitText="Continue"
-        initialValues={{ nicotine: false }}
+        initialValues={currentFormValues}
+        onValuesChange={setCurrentFormValues}
         validationSchema={formSchema}
       />
     </div>

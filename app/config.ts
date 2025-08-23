@@ -1,0 +1,66 @@
+import { type FieldConfig } from "./components/FormWrapper/FormWrapper";
+
+export const BASE_FIELDS: FieldConfig[] = [
+  {
+    type: "date",
+    name: "birthDate",
+    label: "Date of Birth",
+    size: "medium",
+    variant: "outline",
+  },
+  {
+    type: "select",
+    name: "height",
+    label: "Height (cm)",
+    options: Array.from({ length: 81 }, (_, i) => ({
+      value: (140 + i).toString(),
+      label: `${140 + i} cm`,
+    })),
+    props: {
+      placeholder: "Select your height",
+    },
+  },
+  {
+    type: "input",
+    name: "weight",
+    label: "Weight (lbs)",
+    props: { placeholder: "Enter your weight", type: "number" },
+  },
+  {
+    type: "input",
+    name: "zip",
+    label: "Zip code",
+    props: { placeholder: "Enter your zip code" },
+  },
+  {
+    type: "checkbox",
+    name: "nicotine",
+    label: "I currently use nicotine products",
+    props: {},
+  },
+  {
+    type: "checkbox",
+    name: "medicalHistory",
+    label: "I have a relevant medical history",
+    props: {},
+  },
+];
+
+export const MEDICAL_HISTORY_FIELDS: FieldConfig[] = [
+  {
+    type: "select",
+    name: "surgeries",
+    label: "Past Surgeries",
+    options: [
+      { value: "bypass", label: "Bypass Surgery" },
+      { value: "appendectomy", label: "Appendectomy" },
+    ],
+    placeholder: "Select surgery",
+  },
+  {
+    type: "checkbox",
+    name: "prescriptions",
+    label: "I currently use prescriptions",
+    props: {},
+  },
+];
