@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   ArrowIcon,
   OptionItem,
@@ -13,11 +13,11 @@ interface Option {
   label: string;
 }
 
-interface CustomSelectProps {
+export interface CustomSelectProps {
   label?: string;
   options: Option[];
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
   placeholder?: string;
 }
 
@@ -47,7 +47,15 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   }, [wrapperRef]);
 
   const handleOptionClick = (optionValue: string) => {
-    onChange(optionValue);
+    if (onChange) {
+      const syntheticEvent = {
+        target: {
+          value: optionValue,
+        },
+      } as unknown as ChangeEvent<HTMLSelectElement>;
+
+      onChange(syntheticEvent);
+    }
     setIsOpen(false);
   };
 

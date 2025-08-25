@@ -19,7 +19,7 @@ export interface CustomMultiSelectProps {
   label?: string;
   options: Option[];
   value: string[];
-  onChange: (value: string[]) => void;
+  onChange?: (selectedValues: string[]) => void;
   placeholder?: string;
 }
 
@@ -49,12 +49,18 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
   }, [wrapperRef]);
 
   const handleOptionClick = (optionValue: string) => {
+    if (!onChange) return;
+
     const isSelected = value.includes(optionValue);
+    let newValues: string[];
+
     if (isSelected) {
-      onChange(value.filter((val) => val !== optionValue));
+      newValues = value.filter((val) => val !== optionValue);
     } else {
-      onChange([...value, optionValue]);
+      newValues = [...value, optionValue];
     }
+
+    onChange(newValues);
   };
 
   const selectedOptions = options.filter((option) =>

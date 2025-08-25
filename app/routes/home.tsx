@@ -7,21 +7,26 @@ import { formSchema, type FormValues } from "../schemas/formSchema";
 export default function Home() {
   const { showSnackbar } = useSnackbar();
 
-  const [currentFormValues, setCurrentFormValues] = useState<
-    Record<string, unknown>
-  >({
+  const initialFormState = {
     nicotine: false,
     medicalHistory: false,
-  });
+  };
+
+  const [currentFormValues, setCurrentFormValues] =
+    useState<Record<string, unknown>>(initialFormState);
 
   const finalFields = [
     ...BASE_FIELDS,
     ...(currentFormValues.medicalHistory ? MEDICAL_HISTORY_FIELDS : []),
   ];
 
-  const handleSubmit = (values: FormValues, reset: () => void) => {
+  const resetHomeForm = () => {
+    setCurrentFormValues(initialFormState);
+  };
+
+  const handleSubmit = (values: FormValues) => {
     console.log("Form submitted:", values);
-    reset();
+    resetHomeForm();
     showSnackbar("Form submitted successfully!");
   };
 

@@ -1,19 +1,22 @@
 import React from "react";
-import { SelectWrapper, StyledSelect, SelectLabel, ErrorText } from "./Select.styles";
+import { ErrorText, SelectWrapper, StyledSelect } from "./Select.styles";
 import type { SelectProps } from "./Select.types";
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({
-    options = [],
-    label,
-    variant = "outline",
-    size = "medium",
-    placeholder,
-    helperText,
-    error = false,
-    className,
-    ...props
-  }, ref) => {
+  (
+    {
+      options = [],
+      label,
+      variant = "outline",
+      size = "medium",
+      placeholder,
+      helperText,
+      error = false,
+      className,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <SelectWrapper className={className}>
         <StyledSelect

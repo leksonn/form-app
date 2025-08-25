@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from "react";
-import { Fragment, useState } from "react";
+import { useEffect, useState } from "react";
 import { z, type ZodSchema } from "zod";
 import { Button } from "../ui/Button";
 import { Checkbox } from "../ui/Checkbox";
@@ -128,24 +128,32 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   const [formValues, setFormValues] = useState<Partial<TFormValues>>(
     initialValues as Partial<TFormValues>
   );
+
   const [errors, setErrors] = useState<Partial<Record<string, string>>>({});
+
+  useEffect(() => {
+    setFormValues(initialValues as Partial<TFormValues>);
+  }, [initialValues]);
+
+  useEffect(() => {
+    if (onValuesChange) {
+      onValuesChange(formValues);
+    }
+  }, [formValues, onValuesChange]);
+
   const resetForm = () => {
     setFormValues(initialValues);
+    setErrors({});
   };
+
   const handleChange = <K extends keyof TFormValues>(
     name: K,
     value: TFormValues[K]
   ) => {
-    setFormValues((prevValues) => {
-      const newValues = {
-        ...prevValues,
-        [name]: value,
-      };
-      if (onValuesChange) {
-        onValuesChange(newValues);
-      }
-      return newValues;
-    });
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
 
     if (errors[name as string]) {
       setErrors((prev) => ({
@@ -153,238 +161,241 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
         [name as string]: "",
       }));
     }
+  };
 
-    const validateField = (name: string) => {
-      if (!validationSchema) return;
+  const validateField = (name: string) => {
+    if (!validationSchema) return;
 
-      const fieldValue = formValues[name as keyof TFormValues];
+    const fieldValue = formValues[name as keyof TFormValues];
 
-      try {
-        const objectSchema = validationSchema as z.ZodObject<any>;
-        const fieldSchema = z.object({
-          [name]: objectSchema.shape[name],
-        });
+    try {
+      const objectSchema = validationSchema as z.ZodObject<any>;
+      const fieldSchema = z.object({
+        [name]: objectSchema.shape[name],
+      });
 
-        const valueToValidate = fieldValue === undefined ? "" : fieldValue;
-        fieldSchema.parse({ [name]: valueToValidate });
+      const valueToValidate = fieldValue === undefined ? "" : fieldValue;
+      fieldSchema.parse({ [name]: valueToValidate });
 
-        setErrors((prev) => ({ ...prev, [name]: "" }));
-      } catch (err) {
-        if (err instanceof z.ZodError) {
-          setErrors((prev) => ({
-            ...prev,
-            [name]: err.issues[0].message,
-          }));
-        }
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrors((prev) => ({
+          ...prev,
+          [name]: err.issues[0].message,
+        }));
       }
-    };
+    }
+  };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      if (validationSchema) {
-        const newErrors: Partial<Record<string, string>> = {};
+    if (validationSchema) {
+      const newErrors: Partial<Record<string, string>> = {};
 
-        fields.forEach((field) => {
-          try {
-            const objectSchema = validationSchema as z.ZodObject<any>;
-            const fieldSchema = z.object({
-              [field.name]: objectSchema.shape[field.name],
-            });
-
-            const fieldValue = formValues[field.name as keyof TFormValues];
-            const valueToValidate = fieldValue === undefined ? "" : fieldValue;
-
-            fieldSchema.parse({ [field.name]: valueToValidate });
-          } catch (err) {
-            if (err instanceof z.ZodError) {
-              newErrors[field.name] = err.issues[0].message;
-            }
-          }
-        });
-
-        if (Object.keys(newErrors).length > 0) {
-          setErrors(newErrors);
-          return;
-        }
-
+      fields.forEach((field) => {
         try {
-          const completeFormValues: Record<string, unknown> = {};
-
-          fields.forEach((field) => {
-            const value = formValues[field.name as keyof TFormValues];
-            if (field.type === "checkbox") {
-              completeFormValues[field.name] =
-                value !== undefined ? value : false;
-            } else {
-              completeFormValues[field.name] = value !== undefined ? value : "";
-            }
+          const objectSchema = validationSchema as z.ZodObject<any>;
+          const fieldSchema = z.object({
+            [field.name]: objectSchema.shape[field.name],
           });
 
-          const validatedValues = validationSchema.parse(completeFormValues);
-          setErrors({});
-          onSubmit(validatedValues as TFormValues, resetForm);
+          const fieldValue = formValues[field.name as keyof TFormValues];
+          const valueToValidate = fieldValue === undefined ? "" : fieldValue;
+
+          fieldSchema.parse({ [field.name]: valueToValidate });
         } catch (err) {
           if (err instanceof z.ZodError) {
-            const validationErrors: Partial<Record<string, string>> = {};
-            err.issues.forEach((issue) => {
-              const path = issue.path[0];
-              if (typeof path === "string") {
-                validationErrors[path] = issue.message;
-              }
-            });
-            setErrors(validationErrors);
+            newErrors[field.name] = err.issues[0].message;
           }
         }
-      } else {
-        onSubmit(formValues as TFormValues, resetForm);
+      });
+
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
       }
-    };
 
-    const renderField = (field: FieldConfig) => {
-      const fieldError = errors[field.name];
+      try {
+        const completeFormValues: Record<string, unknown> = {};
 
-      switch (field.type) {
-        case "input":
-          return (
-            <Fragment key={field.name}>
-              <Input
-                value={
-                  (formValues[field.name as keyof TFormValues] as string) || ""
-                }
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleChange(
-                    field.name as keyof TFormValues,
-                    e.target.value as TFormValues[keyof TFormValues]
-                  )
-                }
-                onBlur={() => validateField(field.name)}
-                error={Boolean(fieldError)}
-                helperText={fieldError}
-                {...field.props}
-              />
-            </Fragment>
-          );
+        fields.forEach((field) => {
+          const value = formValues[field.name as keyof TFormValues];
+          if (field.type === "checkbox") {
+            completeFormValues[field.name] =
+              value !== undefined ? value : false;
+          } else {
+            completeFormValues[field.name] = value !== undefined ? value : "";
+          }
+        });
 
-        case "date":
-          return (
-            <Fragment key={field.name}>
-              <DateInput
-                value={
-                  (formValues[field.name as keyof TFormValues] as string) || ""
-                }
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleChange(
-                    field.name as keyof TFormValues,
-                    e.target.value as TFormValues[keyof TFormValues]
-                  )
-                }
-                onBlur={() => validateField(field.name)}
-                error={Boolean(fieldError)}
-                helperText={fieldError}
-                size={field.size}
-                variant={field.variant}
-                {...field.props}
-              />
-            </Fragment>
-          );
-
-        case "checkbox":
-          return (
-            <Fragment key={field.name}>
-              <Checkbox
-                label={field.label}
-                checked={Boolean(formValues[field.name as keyof TFormValues])}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleChange(
-                    field.name as keyof TFormValues,
-                    e.target.checked as TFormValues[keyof TFormValues]
-                  )
-                }
-                error={Boolean(fieldError)}
-                helperText={fieldError}
-                {...field.props}
-              />
-            </Fragment>
-          );
-
-        case "select":
-          return (
-            <Fragment key={field.name}>
-              <Select
-                label={field.label}
-                value={
-                  (formValues[field.name as keyof TFormValues] as string) || ""
-                }
-                options={field.options}
-                onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                  handleChange(
-                    field.name as keyof TFormValues,
-                    e.target.value as TFormValues[keyof TFormValues]
-                  )
-                }
-                onBlur={() => validateField(field.name)}
-                error={Boolean(errors[field.name])}
-                helperText={errors[field.name]}
-                placeholder={field.props?.placeholder}
-                variant={field.variant}
-                size={field.size}
-              />
-            </Fragment>
-          );
-        case "customselect":
-          return (
-            <CustomSelect
-              key={field.name}
-              label={field.label}
-              value={(formValues[field.name] as string) || ""}
-              options={field.options}
-              onChange={(val) => handleChange(field.name, val)}
-              placeholder={field.placeholder}
-            />
-          );
-
-        case "multiselect":
-          return (
-            <CustomMultiSelect
-              key={field.name}
-              label={field.label}
-              value={(formValues[field.name] as string[]) || []}
-              options={field.options}
-              onChange={(vals) => handleChange(field.name, vals)}
-              placeholder={field.placeholder}
-            />
-          );
-
-        default:
-          return null;
+        const validatedValues = validationSchema.parse(completeFormValues);
+        setErrors({});
+        onSubmit(validatedValues as TFormValues, resetForm);
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          const validationErrors: Partial<Record<string, string>> = {};
+          err.issues.forEach((issue) => {
+            const path = issue.path[0];
+            if (typeof path === "string") {
+              validationErrors[path] = issue.message;
+            }
+          });
+          setErrors(validationErrors);
+        }
       }
-    };
-
-    return (
-      <FormContainer onSubmit={handleSubmit}>
-        <FormHeader title={title} description={description} />
-        {fields.map((field) => (
-          <FormField key={field.name}>
-            {field.label && field.type !== "checkbox" && (
-              <FormLabel>{field.label}</FormLabel>
-            )}
-            {renderField(field)}
-            {field.type === "checkbox" && errors[field.name] && (
-              <ErrorText>{errors[field.name]}</ErrorText>
-            )}
-          </FormField>
-        ))}
-        <Button
-          type="submit"
-          colorScheme="green"
-          variant="solid"
-          size="large"
-          style={{ width: "100%" }}
-        >
-          {submitText}
-        </Button>
-      </FormContainer>
-    );
+    } else {
+      onSubmit(formValues as TFormValues, resetForm);
+    }
   };
+
+  const renderField = (field: FieldConfig) => {
+    const fieldError = errors[field.name];
+
+    switch (field.type) {
+      case "input":
+        return (
+          <Input
+            value={
+              (formValues[field.name as keyof TFormValues] as string) || ""
+            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleChange(
+                field.name as keyof TFormValues,
+                e.target.value as TFormValues[keyof TFormValues]
+              )
+            }
+            onBlur={() => validateField(field.name)}
+            error={Boolean(fieldError)}
+            helperText={fieldError}
+            {...field.props}
+          />
+        );
+
+      case "date":
+        return (
+          <DateInput
+            value={
+              (formValues[field.name as keyof TFormValues] as string) || ""
+            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleChange(
+                field.name as keyof TFormValues,
+                e.target.value as TFormValues[keyof TFormValues]
+              )
+            }
+            onBlur={() => validateField(field.name)}
+            error={Boolean(fieldError)}
+            helperText={fieldError}
+            size={field.size}
+            variant={field.variant}
+            {...field.props}
+          />
+        );
+
+      case "checkbox":
+        return (
+          <Checkbox
+            label={field.label}
+            checked={Boolean(formValues[field.name as keyof TFormValues])}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              handleChange(
+                field.name as keyof TFormValues,
+                e.target.checked as TFormValues[keyof TFormValues]
+              )
+            }
+            error={Boolean(fieldError)}
+            helperText={fieldError}
+            {...field.props}
+          />
+        );
+
+      case "select":
+        return (
+          <Select
+            label={field.label}
+            value={
+              (formValues[field.name as keyof TFormValues] as string) || ""
+            }
+            options={field.options}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              handleChange(
+                field.name as keyof TFormValues,
+                e.target.value as TFormValues[keyof TFormValues]
+              )
+            }
+            onBlur={() => validateField(field.name)}
+            error={Boolean(errors[field.name])}
+            helperText={errors[field.name]}
+            placeholder={field.props?.placeholder}
+            variant={field.variant}
+            size={field.size}
+          />
+        );
+
+      case "customselect":
+        return (
+          <CustomSelect
+            key={field.name}
+            label={field.label}
+            value={(formValues[field.name] as string) || ""}
+            options={field.options}
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              handleChange(
+                field.name as keyof TFormValues,
+                e.target.value as TFormValues[keyof TFormValues]
+              );
+            }}
+            placeholder={field.placeholder}
+          />
+        );
+
+      case "multiselect":
+        return (
+          <CustomMultiSelect
+            key={field.name}
+            label={field.label}
+            value={(formValues[field.name] as string[]) || []}
+            options={field.options}
+            onChange={(selectedValues: string[]) => {
+              handleChange(
+                field.name as keyof TFormValues,
+                selectedValues as TFormValues[keyof TFormValues]
+              );
+            }}
+            placeholder={field.placeholder}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <FormContainer onSubmit={handleSubmit}>
+      <FormHeader title={title} description={description} />
+      {fields.map((field) => (
+        <FormField key={field.name}>
+          {field.label && field.type !== "checkbox" && (
+            <FormLabel>{field.label}</FormLabel>
+          )}
+          {renderField(field)}
+          {field.type === "checkbox" && errors[field.name] && (
+            <ErrorText>{errors[field.name]}</ErrorText>
+          )}
+        </FormField>
+      ))}
+      <Button
+        type="submit"
+        colorScheme="green"
+        variant="solid"
+        size="large"
+        style={{ width: "100%" }}
+      >
+        {submitText}
+      </Button>
+    </FormContainer>
+  );
 };

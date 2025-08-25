@@ -48,12 +48,14 @@ export const BASE_FIELDS: FieldConfig[] = [
 
 export const MEDICAL_HISTORY_FIELDS: FieldConfig[] = [
   {
-    type: "select",
+    type: "multiselect",
     name: "surgeries",
     label: "Past Surgeries",
     options: [
       { value: "bypass", label: "Bypass Surgery" },
+      { value: "appendectomy2", label: "Appendectomy" },
       { value: "appendectomy", label: "Appendectomy" },
+      { value: "appendectomy3", label: "Appendectomy" },
     ],
     placeholder: "Select surgery",
   },
