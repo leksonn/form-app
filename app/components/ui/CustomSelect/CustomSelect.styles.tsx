@@ -1,5 +1,9 @@
 import { styled } from "styled-components";
 
+const errorColor = "#dc2626";
+const focusColor = "#3182ce";
+const normalBorderColor = "#d1d5db";
+
 export const SelectWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -12,26 +16,31 @@ export const SelectLabel = styled.label`
   margin-bottom: 0.25rem;
 `;
 
-export const SelectTrigger = styled.div`
+export const SelectTrigger = styled.div<{
+  $error?: boolean;
+  $focused?: boolean;
+}>`
   position: relative;
   width: 100%;
   cursor: pointer;
   border-radius: 6px;
   background-color: transparent;
-  border: 1px solid #d1d5db;
+  border: 1px solid ${({ $error }) => ($error ? errorColor : normalBorderColor)};
   padding: 0.5rem 0.75rem;
   color: #111827;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 1px #3b82f6;
-  }
+  ${({ $focused, $error }) =>
+    $focused &&
+    `
+    border-color: ${$error ? errorColor : focusColor};
+    box-shadow: 0 0 0 2px ${$error ? `${errorColor}80` : `${focusColor}40`};
+  `}
 `;
 
 export const OptionsList = styled.ul`
@@ -43,10 +52,10 @@ export const OptionsList = styled.ul`
   background-color: #fff;
   box-shadow:
     0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    0 4px 6 -2px rgba(0, 0, 0, 0.05);
   overflow-y: auto;
   max-height: 12rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid ${normalBorderColor};
   padding: 0.25rem 0;
 `;
 
@@ -124,4 +133,11 @@ export const MultiSelectTag = styled.span`
   font-size: 0.75rem;
   font-weight: 500;
   color: #3b3a3aff;
+`;
+
+export const ErrorText = styled.span`
+  display: block;
+  color: ${errorColor};
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 `;

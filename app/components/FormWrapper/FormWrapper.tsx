@@ -157,13 +157,10 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
       ...prevValues,
       [name]: value,
     }));
+  };
 
-    if (errors[name as string]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name as string]: "",
-      }));
-    }
+  const handleBlur = (name: string) => {
+    validateField(name);
   };
 
   const validateField = (name: string) => {
@@ -350,7 +347,10 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
                 e.target.value as TFormValues[keyof TFormValues]
               );
             }}
+            onBlur={() => handleBlur(field.name)}
             placeholder={field.placeholder}
+            error={Boolean(errors[field.name])}
+            helperText={errors[field.name]}
           />
         );
 
