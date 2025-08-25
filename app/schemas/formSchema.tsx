@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const STEP_ONE_SCHEMA = z.object({
   birthDate: z
     .string()
     .min(1, "Birthdate is required")
@@ -53,5 +53,42 @@ export const formSchema = z.object({
     }, z.boolean().optional())
     .optional(),
 });
+
+export const STEP_TWO_SCHEMA = z.object({
+  firstName: z
+    .string()
+    .min(2, "First name must be at least 2 characters")
+    .max(50, "First name must be at most 50 characters")
+    .regex(
+      /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/,
+      "First name can only contain letters, spaces, hyphens, or apostrophes"
+    ),
+
+  lastName: z
+    .string()
+    .min(2, "Last name must be at least 2 characters")
+    .max(50, "Last name must be at most 50 characters")
+    .regex(
+      /^[A-Za-zÀ-ÖØ-öø-ÿ' -]+$/,
+      "Last name can only contain letters, spaces, hyphens, or apostrophes"
+    ),
+
+  phone: z
+    .string()
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number must be at most 15 digits")
+    .regex(
+      /^\+?[0-9]{10,15}$/,
+      "Invalid phone number format (use digits, optional +)"
+    ),
+
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .max(100, "Email is too long")
+    .email("Invalid email address"),
+});
+
+export const formSchema = z.object({}).passthrough();
 
 export type FormValues = z.infer<typeof formSchema>;
