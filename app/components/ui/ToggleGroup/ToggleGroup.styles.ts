@@ -1,5 +1,5 @@
 import { css, styled } from "styled-components";
-const errorColor = "#dc2626";
+const errorColor = "#e53e3e";
 
 export const ErrorText = styled.span`
   display: block;
@@ -13,8 +13,7 @@ export const ToggleGroupContainer = styled.div`
   background-color: transparent;
   border-radius: 8px;
   overflow: hidden;
-  max-width: 150px;
-  border: 0.5px solid #c5cbd1ff;
+
 `;
 
 export const ToggleButton = styled.button<{ $active?: boolean }>`
@@ -29,6 +28,7 @@ export const ToggleButton = styled.button<{ $active?: boolean }>`
   color: #495057;
   background-color: transparent;
   border: 0.5px solid #c5cbd1ff;
+  max-width: 80px;
 
   &:hover {
     background-color: #dee2e6;
