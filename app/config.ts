@@ -2,6 +2,15 @@ import { type FieldConfig } from "./components/FormWrapper/FormWrapper";
 
 export const BASE_FIELDS: FieldConfig[] = [
   {
+    type: "toggle",
+    name: "gender",
+    label: "Gender",
+    options: [
+      { value: "male", label: "Male" },
+      { value: "female", label: "Female" },
+    ],
+  },
+  {
     type: "date",
     name: "birthDate",
     label: "Date of Birth",
