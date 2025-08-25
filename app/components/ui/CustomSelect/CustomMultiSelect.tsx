@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowIcon,
+  ErrorText,
   MultiSelectTag,
   MultiSelectTagsWrapper,
   OptionItem,
@@ -19,8 +20,11 @@ export interface CustomMultiSelectProps {
   label?: string;
   options: Option[];
   value: string[];
-  onChange: (value: string[]) => void;
+  onChange?: (selectedValues: string[]) => void;
   placeholder?: string;
+  error?: boolean;
+  helperText?: string;
+  onBlur?: () => void;
 }
 
 export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
@@ -29,8 +33,12 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
   value = [],
   onChange,
   placeholder,
+  error,
+  helperText,
+  onBlur,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -40,30 +48,37 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
         !wrapperRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setIsFocused(false);
+        if (onBlur) onBlur();
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [wrapperRef]);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onBlur]);
 
   const handleOptionClick = (optionValue: string) => {
+    if (!onChange) return;
     const isSelected = value.includes(optionValue);
-    if (isSelected) {
-      onChange(value.filter((val) => val !== optionValue));
-    } else {
-      onChange([...value, optionValue]);
-    }
+    const newValues = isSelected
+      ? value.filter((v) => v !== optionValue)
+      : [...value, optionValue];
+    onChange(newValues);
   };
 
   const selectedOptions = options.filter((option) =>
     value.includes(option.value)
   );
+  const showError = error && selectedOptions.length === 0;
 
   return (
     <SelectWrapper ref={wrapperRef}>
-      <SelectTrigger onClick={() => setIsOpen(!isOpen)}>
+      <SelectTrigger
+        $error={showError}
+        $focused={isFocused}
+        tabIndex={0}
+        onClick={() => setIsOpen(!isOpen)}
+        onFocus={() => setIsFocused(true)}
+      >
         <MultiSelectTagsWrapper>
           {selectedOptions.length > 0 ? (
             selectedOptions.map((option) => (
@@ -93,6 +108,8 @@ export const CustomMultiSelect: React.FC<CustomMultiSelectProps> = ({
           })}
         </OptionsList>
       )}
+
+      {showError && helperText && <ErrorText>{helperText}</ErrorText>}
     </SelectWrapper>
   );
 };

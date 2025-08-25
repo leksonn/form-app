@@ -9,7 +9,7 @@ export const BASE_FIELDS: FieldConfig[] = [
     variant: "outline",
   },
   {
-    type: "select",
+    type: "customselect",
     name: "height",
     label: "Height (cm)",
     options: Array.from({ length: 81 }, (_, i) => ({
@@ -48,19 +48,23 @@ export const BASE_FIELDS: FieldConfig[] = [
 
 export const MEDICAL_HISTORY_FIELDS: FieldConfig[] = [
   {
-    type: "select",
+    type: "multiselect",
     name: "surgeries",
     label: "Past Surgeries",
     options: [
       { value: "bypass", label: "Bypass Surgery" },
       { value: "appendectomy", label: "Appendectomy" },
+      { value: "cholecystectomy", label: "Cholecystectomy" },
+      { value: "general", label: "General Surgery" },
     ],
     placeholder: "Select surgery",
+    dependsOn: { field: "medicalHistory", value: true },
   },
   {
     type: "checkbox",
     name: "prescriptions",
     label: "I currently use prescriptions",
     props: {},
+    dependsOn: { field: "medicalHistory", value: true },
   },
 ];

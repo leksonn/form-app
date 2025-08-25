@@ -77,3 +77,11 @@ export const SubmitButton = styled.button`
     background-color: #4338ca;
   }
 `;
+
+export const ErrorText = styled.span`
+  color: #ff4d4f;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+`;
+

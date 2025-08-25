@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   ArrowIcon,
+  ErrorText,
   OptionItem,
   OptionsList,
   Placeholder,
@@ -13,12 +14,15 @@ interface Option {
   label: string;
 }
 
-interface CustomSelectProps {
+export interface CustomSelectProps {
   label?: string;
   options: Option[];
   value: string;
-  onChange: (value: string) => void;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
   placeholder?: string;
+  error?: boolean;
+  helperText?: string;
+  onBlur?: () => void;
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -27,27 +31,42 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   value,
   onChange,
   placeholder,
+  error,
+  helperText,
+  onBlur,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         wrapperRef.current &&
         !wrapperRef.current.contains(event.target as Node)
       ) {
+        if (isFocused) {
+          setIsFocused(false);
+          onBlur?.();
+        }
         setIsOpen(false);
       }
-    }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [wrapperRef]);
+  }, [onBlur, isFocused]);
 
   const handleOptionClick = (optionValue: string) => {
-    onChange(optionValue);
+    if (onChange) {
+      const syntheticEvent = {
+        target: { value: optionValue },
+      } as unknown as ChangeEvent<HTMLSelectElement>;
+      onChange(syntheticEvent);
+    }
+
     setIsOpen(false);
   };
 
@@ -55,7 +74,13 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <SelectWrapper ref={wrapperRef}>
-      <SelectTrigger onClick={() => setIsOpen(!isOpen)}>
+      <SelectTrigger
+        $error={error}
+        $focused={isFocused}
+        tabIndex={0}
+        onClick={() => setIsOpen(!isOpen)}
+        onFocus={() => setIsFocused(true)}
+      >
         {selectedOption ? (
           <span>{selectedOption.label}</span>
         ) : (
@@ -77,6 +102,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           ))}
         </OptionsList>
       )}
+
+      {error && helperText && <ErrorText>{helperText}</ErrorText>}
     </SelectWrapper>
   );
 };
