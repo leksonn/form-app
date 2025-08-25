@@ -68,3 +68,30 @@ export const MEDICAL_HISTORY_FIELDS: FieldConfig[] = [
     dependsOn: { field: "medicalHistory", value: true },
   },
 ];
+
+export const STEP_TWO_FIELDS: FieldConfig[] = [
+  {
+    type: "input",
+    name: "firstName",
+    label: "First Name",
+    props: { placeholder: "Enter your first name" },
+  },
+  {
+    type: "input",
+    name: "lastName",
+    label: "Last Name",
+    props: { placeholder: "Enter your last name" },
+  },
+  {
+    type: "input",
+    name: "phone",
+    label: "Phone Number",
+    props: { placeholder: "Enter your phone number", type: "tel" },
+  },
+  {
+    type: "input",
+    name: "email",
+    label: "Email Address",
+    props: { placeholder: "Enter your email", type: "email" },
+  },
+];
