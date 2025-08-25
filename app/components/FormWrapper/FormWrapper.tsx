@@ -7,12 +7,13 @@ import type { CheckboxProps } from "../ui/Checkbox/Checkbox.types";
 import { CustomMultiSelect, CustomSelect } from "../ui/CustomSelect";
 import type { CustomMultiSelectProps } from "../ui/CustomSelect/CustomMultiSelect";
 import type { CustomSelectProps } from "../ui/CustomSelect/CustomSelect";
-import { Select } from "../ui/Select";
-
 import { DateInput } from "../ui/DateInput";
 import { Input } from "../ui/Input";
 import type { InputProps } from "../ui/Input/Input.types";
+import { Select } from "../ui/Select";
 import type { SelectProps } from "../ui/Select/Select.types";
+import { ToggleGroup } from "../ui/ToggleGroup";
+import type { ToggleGroupProps } from "../ui/ToggleGroup/ToggleGroup";
 import {
   ErrorText,
   FormContainer,
@@ -87,6 +88,15 @@ export type MultiSelectField = {
   placeholder?: string;
 };
 
+export type ToggleField = {
+  type: "toggle";
+  name: string;
+  label?: string;
+  options: ToggleGroupProps["options"];
+  helperText?: string;
+  props?: Omit<SelectProps, "value" | "onChange" | "options">;
+};
+
 export type FieldConfig = (
   | InputField
   | DateInputField
@@ -94,6 +104,7 @@ export type FieldConfig = (
   | SelectField
   | CustomSelectField
   | MultiSelectField
+  | ToggleField
 ) & {
   dependsOn?: { field: string; value: unknown };
 };
@@ -157,10 +168,14 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
       ...prevValues,
       [name]: value,
     }));
-  };
-
-  const handleBlur = (name: string) => {
-    validateField(name);
+    setErrors((prevErrors) => {
+      if (prevErrors[name as string]) {
+        const updatedErrors = { ...prevErrors };
+        delete updatedErrors[name as string];
+        return updatedErrors;
+      }
+      return prevErrors;
+    });
   };
 
   const validateField = (name: string) => {
@@ -347,7 +362,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
                 e.target.value as TFormValues[keyof TFormValues]
               );
             }}
-            onBlur={() => handleBlur(field.name)}
+            onBlur={() => validateField(field.name)}
             placeholder={field.placeholder}
             error={Boolean(errors[field.name])}
             helperText={errors[field.name]}
@@ -368,6 +383,24 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
               );
             }}
             placeholder={field.placeholder}
+          />
+        );
+
+      case "toggle":
+        return (
+          <ToggleGroup
+            value={
+              (formValues[field.name as keyof TFormValues] as string) || ""
+            }
+            options={field.options}
+            onChange={(value) =>
+              handleChange(
+                field.name as keyof TFormValues,
+                value as TFormValues[keyof TFormValues]
+              )
+            }
+            error={Boolean(errors[field.name])}
+            helperText={errors[field.name]}
           />
         );
 

@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-const errorColor = "#dc2626";
+const errorColor = "#e53e3e";
 const focusColor = "#3182ce";
 const normalBorderColor = "#d1d5db";
 

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
+  gender: z.string().min(1, "Please select your gender"),
   birthDate: z
     .string()
     .min(1, "Birthdate is required")
