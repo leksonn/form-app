@@ -15,10 +15,7 @@ export default function Home() {
   const [currentFormValues, setCurrentFormValues] =
     useState<Record<string, unknown>>(initialFormState);
 
-  const finalFields = [
-    ...BASE_FIELDS,
-    ...(currentFormValues.medicalHistory ? MEDICAL_HISTORY_FIELDS : []),
-  ];
+  const finalFields = [...BASE_FIELDS, ...MEDICAL_HISTORY_FIELDS];
 
   const resetHomeForm = () => {
     setCurrentFormValues(initialFormState);

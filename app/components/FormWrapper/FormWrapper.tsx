@@ -87,13 +87,16 @@ export type MultiSelectField = {
   placeholder?: string;
 };
 
-export type FieldConfig =
+export type FieldConfig = (
   | InputField
   | DateInputField
   | CheckboxField
   | SelectField
   | CustomSelectField
-  | MultiSelectField;
+  | MultiSelectField
+) & {
+  dependsOn?: { field: string; value: unknown };
+};
 
 export type InferFormValues<TFields extends FieldConfig[]> = {
   [K in TFields[number]["name"]]: Extract<
@@ -376,17 +379,27 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   return (
     <FormContainer onSubmit={handleSubmit}>
       <FormHeader title={title} description={description} />
-      {fields.map((field) => (
-        <FormField key={field.name}>
-          {field.label && field.type !== "checkbox" && (
-            <FormLabel>{field.label}</FormLabel>
-          )}
-          {renderField(field)}
-          {field.type === "checkbox" && errors[field.name] && (
-            <ErrorText>{errors[field.name]}</ErrorText>
-          )}
-        </FormField>
-      ))}
+      {fields.map((field) => {
+        if (field.dependsOn) {
+          const depValue =
+            formValues[field.dependsOn.field as keyof TFormValues];
+          if (depValue !== field.dependsOn.value) {
+            return null;
+          }
+        }
+
+        return (
+          <FormField key={field.name}>
+            {field.label && field.type !== "checkbox" && (
+              <FormLabel>{field.label}</FormLabel>
+            )}
+            {renderField(field)}
+            {field.type === "checkbox" && errors[field.name] && (
+              <ErrorText>{errors[field.name]}</ErrorText>
+            )}
+          </FormField>
+        );
+      })}
       <Button
         type="submit"
         colorScheme="green"
