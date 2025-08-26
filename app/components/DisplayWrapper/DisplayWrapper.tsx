@@ -1,14 +1,17 @@
+import { FiRefreshCcw } from "react-icons/fi";
 import {
   BASE_FIELDS,
   MEDICAL_HISTORY_FIELDS,
   STEP_TWO_FIELDS,
 } from "../../config";
 import { useMultiStepForm } from "../FormWrapper/MultiStepFormContext";
+import { Button } from "../ui/Button/Button";
 import {
   Container,
   DataItem,
   DataList,
   Description,
+  Header,
   Label,
   Title,
   Value,
@@ -62,7 +65,19 @@ export const DisplayWrapper = () => {
 
   return (
     <Container>
-      <Title>Form Submitted Successfully!</Title>
+      <Header>
+        <Title>Form Submitted Successfully!</Title>
+        <Button
+          leftIcon={<FiRefreshCcw />}
+          onClick={resetForm}
+          variant="plain"
+          style={{ minWidth: 32, padding: 0 }}
+        >
+          {""}
+          {}
+        </Button>
+      </Header>
+
       <Description>
         Thank you for your submission. Here’s a summary of your information:
       </Description>
