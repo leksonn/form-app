@@ -7,11 +7,10 @@ import type { CheckboxProps } from "../ui/Checkbox/Checkbox.types";
 import { CustomMultiSelect, CustomSelect } from "../ui/CustomSelect";
 import type { CustomMultiSelectProps } from "../ui/CustomSelect/CustomMultiSelect";
 import type { CustomSelectProps } from "../ui/CustomSelect/CustomSelect";
-import { Select } from "../ui/Select";
-
 import { DateInput } from "../ui/DateInput";
 import { Input } from "../ui/Input";
 import type { InputProps } from "../ui/Input/Input.types";
+import { Select } from "../ui/Select";
 import type { SelectProps } from "../ui/Select/Select.types";
 import {
   ErrorText,
@@ -116,6 +115,7 @@ interface FormWrapperProps<TFormValues = Record<string, unknown>> {
   initialValues?: Partial<TFormValues>;
   validationSchema?: ZodSchema<TFormValues>;
   onValuesChange?: (values: Record<string, unknown>) => void;
+  children?: React.ReactNode;
 }
 
 export const FormWrapper = <TFormValues extends Record<string, unknown>>({
@@ -127,6 +127,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   initialValues = {},
   validationSchema,
   onValuesChange,
+  children,
 }: FormWrapperProps<TFormValues>) => {
   const [formValues, setFormValues] = useState<Partial<TFormValues>>(
     initialValues as Partial<TFormValues>
@@ -157,10 +158,14 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
       ...prevValues,
       [name]: value,
     }));
-  };
-
-  const handleBlur = (name: string) => {
-    validateField(name);
+    setErrors((prevErrors) => {
+      if (prevErrors[name as string]) {
+        const updatedErrors = { ...prevErrors };
+        delete updatedErrors[name as string];
+        return updatedErrors;
+      }
+      return prevErrors;
+    });
   };
 
   const validateField = (name: string) => {
@@ -347,7 +352,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
                 e.target.value as TFormValues[keyof TFormValues]
               );
             }}
-            onBlur={() => handleBlur(field.name)}
+            onBlur={() => validateField(field.name)}
             placeholder={field.placeholder}
             error={Boolean(errors[field.name])}
             helperText={errors[field.name]}
@@ -400,6 +405,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
           </FormField>
         );
       })}
+      {children}
       <Button
         type="submit"
         colorScheme="green"
