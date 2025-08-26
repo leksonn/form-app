@@ -27,10 +27,19 @@ const getLabel = (key: string) => {
   return field?.label || key.replace(/([A-Z])/g, " $1");
 };
 
-const formatValue = (key: string, value: any) => {
+const formatValue = (
+  key: string,
+  value: any,
+  formData: Record<string, any>
+) => {
   const field = getField(key);
 
   if (!field) return value;
+
+  if (formData.medicalHistory === false) {
+    if (key === "surgeries") return "—";
+    if (key === "prescriptions") return "No";
+  }
 
   if (typeof value === "boolean") {
     return value ? "Yes" : "No";
@@ -62,7 +71,7 @@ export const DisplayWrapper = () => {
         {Object.entries(formData).map(([key, value]) => (
           <DataItem key={key}>
             <Label>{key.replace(/([A-Z])/g, " $1")}</Label>
-            <Value>{formatValue(key, value)}</Value>
+            <Value>{formatValue(key, value, formData)}</Value>
           </DataItem>
         ))}
       </DataList>
