@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const STEP_ONE_SCHEMA = z.object({
+  gender: z.string().min(1, "Please select your gender"),
   birthDate: z
     .string()
     .min(1, "Birthdate is required")
