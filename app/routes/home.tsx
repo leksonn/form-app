@@ -51,6 +51,7 @@ const StepTwo = () => {
 
   const handleSubmit = (values: z.infer<typeof STEP_TWO_SCHEMA>) => {
     updateFormData(values);
+    console.log("Form Data Submitted:", { ...formData, ...values });
     nextStep();
   };
 

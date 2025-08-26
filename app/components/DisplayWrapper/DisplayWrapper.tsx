@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 import { FiRefreshCcw } from "react-icons/fi";
 import {
   BASE_FIELDS,
@@ -62,9 +64,18 @@ const formatValue = (
 
 export const DisplayWrapper = () => {
   const { formData, resetForm } = useMultiStepForm();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    setShowConfetti(true);
+
+    const timer = setTimeout(() => setShowConfetti(false), 6000); //konfete padaju sest sekundi
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <Container>
+      {showConfetti && <Confetti />}
       <Header>
         <Title>Form Submitted Successfully!</Title>
         <Button
