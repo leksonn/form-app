@@ -2,6 +2,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -96,8 +97,11 @@ export const MultiStepFormProvider = ({
     [formData]
   );
 
-  const isFirstStep = currentStep === 0;
-  const isLastStep = currentStep === steps - 1;
+  const isFirstStep = useMemo(() => currentStep === 0, [currentStep]);
+  const isLastStep = useMemo(
+    () => currentStep === steps - 1,
+    [currentStep, steps]
+  );
 
   const value = {
     currentStep,
