@@ -64,7 +64,7 @@ export const StyledInput = styled.input<{
   padding: 0.5rem 0.75rem;
   padding-left: ${({ $hasIcon }) => ($hasIcon ? "2.5rem" : "0.75rem")};
   background-color: ${({ $variant }) =>
-    $variant === "subtle" ? "#f9f9f9" : "transparent"};
+    $variant === "subtle" ? "#f9f9f9" : "#fcfbfbff"};
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;

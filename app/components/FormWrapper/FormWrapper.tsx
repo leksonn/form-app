@@ -19,6 +19,7 @@ import {
   FormContainer,
   FormField,
   FormLabel,
+  FormSection,
 } from "./FormWrapper.styles";
 import { FormHeader } from "./FormWrapperHeader/FormHeader";
 
@@ -410,38 +411,41 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
+    <FormSection>
       <FormHeader title={title} description={description} />
-      {fields.map((field) => {
-        if (field.dependsOn) {
-          const depValue =
-            formValues[field.dependsOn.field as keyof TFormValues];
-          if (depValue !== field.dependsOn.value) {
-            return null;
-          }
-        }
 
-        return (
-          <FormField key={field.name}>
-            {field.label && field.type !== "checkbox" && (
-              <FormLabel>{field.label}</FormLabel>
-            )}
-            {renderField(field)}
-            {field.type === "checkbox" && errors[field.name] && (
-              <ErrorText>{errors[field.name]}</ErrorText>
-            )}
-          </FormField>
-        );
-      })}
-      <Button
-        type="submit"
-        colorScheme="green"
-        variant="solid"
-        size="large"
-        style={{ width: "100%" }}
-      >
-        {submitText}
-      </Button>
-    </FormContainer>
+      <FormContainer onSubmit={handleSubmit}>
+        {fields.map((field) => {
+          if (field.dependsOn) {
+            const depValue =
+              formValues[field.dependsOn.field as keyof TFormValues];
+            if (depValue !== field.dependsOn.value) {
+              return null;
+            }
+          }
+
+          return (
+            <FormField key={field.name}>
+              {field.label && field.type !== "checkbox" && (
+                <FormLabel>{field.label}</FormLabel>
+              )}
+              {renderField(field)}
+              {field.type === "checkbox" && errors[field.name] && (
+                <ErrorText>{errors[field.name]}</ErrorText>
+              )}
+            </FormField>
+          );
+        })}
+        <Button
+          type="submit"
+          colorScheme="green"
+          variant="solid"
+          size="large"
+          style={{ width: "100%" }}
+        >
+          {submitText}
+        </Button>
+      </FormContainer>
+    </FormSection>
   );
 };

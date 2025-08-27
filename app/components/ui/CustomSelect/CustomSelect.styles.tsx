@@ -24,7 +24,7 @@ export const SelectTrigger = styled.div<{
   width: 100%;
   cursor: pointer;
   border-radius: 6px;
-  background-color: transparent;
+  background-color: #fcfbfbff;
   border: 1px solid ${({ $error }) => ($error ? errorColor : normalBorderColor)};
   padding: 0.5rem 0.75rem;
   color: #111827;
