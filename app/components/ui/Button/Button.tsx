@@ -30,7 +30,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           <>
-            <Spinner $size={size} />
+            <Spinner data-testid="spinner" $size={size} />
             {loadingText || children}
           </>
         ) : (
