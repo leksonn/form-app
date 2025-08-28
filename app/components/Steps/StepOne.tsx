@@ -16,7 +16,17 @@ export const StepOne = () => {
   ];
 
   const handleSubmit = (values: z.infer<typeof STEP_ONE_SCHEMA>) => {
-    updateFormData(values);
+    const adjustedValues: z.infer<typeof STEP_ONE_SCHEMA> = { ...values };
+    if (!adjustedValues.medicalHistory) {
+      adjustedValues.surgeries = [];
+      adjustedValues.prescriptions = false;
+
+      const finalData = { ...formData, ...adjustedValues };
+    }
+    const finalData = { ...formData, ...adjustedValues };
+
+    updateFormData(finalData);
+
     nextStep();
   };
 
@@ -26,9 +36,11 @@ export const StepOne = () => {
       description="Apply online in minutes. Get an instant decision. Then personalize your coverage."
       fields={fields}
       onSubmit={handleSubmit}
-      submitText="Next"
+      submitText=""
       initialValues={formData}
       validationSchema={STEP_ONE_SCHEMA}
+      actions={[{ type: "next", text: "Next" }]}
+      onNext={nextStep}
     />
   );
 };

@@ -85,3 +85,9 @@ export const ErrorText = styled.span`
   display: block;
 `;
 
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+`;

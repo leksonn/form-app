@@ -3,13 +3,13 @@ import { STEP_TWO_FIELDS } from "../../config";
 import { STEP_TWO_SCHEMA } from "../../schemas/formSchema";
 import { FormWrapper } from "../FormWrapper/FormWrapper";
 import { useMultiStepForm } from "../FormWrapper/MultiStepFormContext";
-import { Button } from "../ui/Button";
 
 export const StepTwo = () => {
   const { formData, updateFormData, nextStep, prevStep } = useMultiStepForm();
 
   const handleSubmit = (values: z.infer<typeof STEP_TWO_SCHEMA>) => {
     updateFormData(values);
+    console.log("Form Data Submitted: ", { ...formData, ...values });
     nextStep();
   };
 
@@ -19,19 +19,15 @@ export const StepTwo = () => {
       description="Tell us a little about yourself to get a personalized quote."
       fields={STEP_TWO_FIELDS}
       onSubmit={handleSubmit}
-      submitText="Submit"
+      submitText=""
       initialValues={formData}
       validationSchema={STEP_TWO_SCHEMA}
-    >
-      <Button
-        onClick={prevStep}
-        type="button"
-        variant="outline"
-        color="blue"
-        style={{ marginBottom: "1.5rem" }}
-      >
-        Previous
-      </Button>
-    </FormWrapper>
+      actions={[
+        { type: "previous", text: "Previous" },
+        { type: "submit", text: "Submit" },
+      ]}
+      onPrevious={prevStep}
+      onNext={nextStep}
+    />
   );
 };
