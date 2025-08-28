@@ -68,7 +68,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     }
 
     setIsOpen(false);
-    onBlur?.();
   };
 
   const selectedOption = options.find((opt) => opt.value === value);

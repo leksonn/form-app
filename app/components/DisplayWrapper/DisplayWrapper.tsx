@@ -1,0 +1,108 @@
+import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import { FiRefreshCcw } from "react-icons/fi";
+import {
+  BASE_FIELDS,
+  MEDICAL_HISTORY_FIELDS,
+  STEP_TWO_FIELDS,
+} from "../../config";
+import { useMultiStepForm } from "../FormWrapper/MultiStepFormContext";
+import { Button } from "../ui/Button/Button";
+import {
+  Container,
+  DataItem,
+  DataList,
+  Description,
+  Header,
+  Label,
+  Title,
+  Value,
+} from "./DisplayWrapper.styles";
+
+const allFields = [
+  ...BASE_FIELDS,
+  ...MEDICAL_HISTORY_FIELDS,
+  ...STEP_TWO_FIELDS,
+];
+
+const getField = (key: string) => allFields.find((f) => f.name === key);
+
+const getLabel = (key: string) => {
+  const field = getField(key);
+  return field?.label || key.replace(/([A-Z])/g, " $1");
+};
+
+const formatValue = (
+  key: string,
+  value: any,
+  formData: Record<string, any>
+) => {
+  const field = getField(key);
+
+  if (!field) return value;
+
+  if (formData.medicalHistory === false) {
+    if (key === "surgeries") return "—";
+    if (key === "prescriptions") return "No";
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "Yes" : "No";
+  }
+
+  if (field.type === "multiselect" && Array.isArray(value)) {
+    if (value.length === 0) return "—";
+    return value
+      .map((val) => {
+        const option = field.options?.find((opt: any) => opt.value === val);
+        return option ? option.label : val;
+      })
+      .join(", ");
+  }
+  return value || "—";
+};
+
+export const DisplayWrapper = () => {
+  const { formData, resetForm } = useMultiStepForm();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    setShowConfetti(true);
+
+    const timer = setTimeout(() => setShowConfetti(false), 6000); //konfete padaju sest sekundi
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <Container>
+      {showConfetti && <Confetti />}
+      <Header>
+        <Title>Form Submitted Successfully!</Title>
+        <Button
+          leftIcon={<FiRefreshCcw />}
+          onClick={resetForm}
+          variant="plain"
+          style={{ minWidth: 32, padding: 0 }}
+        >
+          {""}
+          {}
+        </Button>
+      </Header>
+
+      <Description>
+        Thank you for your submission. Here’s a summary of your information:
+      </Description>
+
+      <DataList>
+        {Object.entries(formData).map(([key, value]) => (
+          <DataItem key={key}>
+            <Label>{key.replace(/([A-Z])/g, " $1")}</Label>
+            <Value>{formatValue(key, value, formData)}</Value>
+          </DataItem>
+        ))}
+      </DataList>
+    </Container>
+  );
+};
+
+DisplayWrapper.displayName = "DisplayWrapper";
