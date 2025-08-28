@@ -1,29 +1,19 @@
-import { DEFAULT_STEPS } from "../Steps/config";
-import { useMultiStepForm } from "./MultiStepFormContext";
+import { useMultiStepForm } from "../FormWrapper/MultiStepFormContext";
+import { StepRenderer } from "../Steps/StepRenderer";
+import { DYNAMIC_STEPS } from "../Steps/config";
 
 export const MultiStepForm = () => {
-  const { currentStep, nextStep, prevStep } = useMultiStepForm();
-  const stepConfig = DEFAULT_STEPS[currentStep];
+  const { currentStep } = useMultiStepForm();
 
-  if (!stepConfig) return null;
+  const currentStepConfig = DYNAMIC_STEPS[currentStep];
 
-  const StepComponent = stepConfig.component;
-
-  const handleActionClick = (type: string) => {
-    switch (type) {
-      case "next":
-      case "submit":
-        nextStep();
-        break;
-      case "previous":
-        prevStep();
-        break;
-    }
-  };
+  if (!currentStepConfig) {
+    return <div>Form completed!</div>;
+  }
 
   return (
-    <>
-      <StepComponent />
-    </>
+    <div>
+      <StepRenderer step={currentStepConfig} />
+    </div>
   );
 };
