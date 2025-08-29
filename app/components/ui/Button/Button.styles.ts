@@ -1,19 +1,23 @@
+import { darken, lighten } from "polished";
 import { css, styled } from "styled-components";
-import type { ButtonSize, ButtonVariant, ButtonColorScheme } from "./Button.types";
-import { lighten, darken } from "polished";
+import type {
+  ButtonColorScheme,
+  ButtonSize,
+  ButtonVariant,
+} from "./Button.types";
 
 const colorMap: Record<ButtonColorScheme, { bg: string; text: string }> = {
-  blue: { bg: "#305CDE", text: "white" },
-  green: { bg: "#2E6F40", text: "white" },
+  blue: { bg: "#4f46e5", text: "white" },
+  green: { bg: "#00B67E", text: "white" },
   red: { bg: "#CD1C18", text: "white" },
   pink: { bg: "#FF00FF", text: "white" },
   yellow: { bg: "#D3AF37", text: "white" },
   gray: { bg: "#252525", text: "white" },
 };
 
-export const IconWrapper = styled.span<{ 
-    $position: "left" | "right"; 
-    $size: ButtonSize 
+export const IconWrapper = styled.span<{
+  $position: "left" | "right";
+  $size: ButtonSize;
 }>`
 
 display: inline-flex;
@@ -29,11 +33,15 @@ height: ${({ $size }) => ($size === "small" ? "14px" : $size === "large" ? "18px
 
 export const Spinner = styled.div<{ $size: ButtonSize }>`
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
   display: inline-block;
-  width: ${({ $size }) => ($size === 'small' ? '14px' : $size === 'large' ? '18px' : '16px')};
-  height: ${({ $size }) => ($size === 'small' ? '14px' : $size === 'large' ? '18px' : '16px')};
+  width: ${({ $size }) =>
+    $size === "small" ? "14px" : $size === "large" ? "18px" : "16px"};
+  height: ${({ $size }) =>
+    $size === "small" ? "14px" : $size === "large" ? "18px" : "16px"};
   border: 2px solid currentColor;
   border-radius: 50%;
   border-right-color: transparent;

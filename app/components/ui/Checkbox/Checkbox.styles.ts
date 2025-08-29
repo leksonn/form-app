@@ -48,7 +48,7 @@ export const StyledCheckbox = styled.div<{
       case "outline":
       default:
         return css`
-          background-color: transparent;
+          background-color: #fcfbfbff;
           border-color: ${$error ? "red" : "lightgray"};
         `;
     }

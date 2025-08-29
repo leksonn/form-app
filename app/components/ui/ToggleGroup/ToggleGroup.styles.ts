@@ -13,7 +13,6 @@ export const ToggleGroupContainer = styled.div`
   background-color: transparent;
   border-radius: 8px;
   overflow: hidden;
-
 `;
 
 export const ToggleButton = styled.button<{ $active?: boolean }>`
@@ -26,7 +25,7 @@ export const ToggleButton = styled.button<{ $active?: boolean }>`
   font-size: 14px;
   font-weight: 500;
   color: #495057;
-  background-color: transparent;
+  background-color: #fcfbfbff;
   border: 0.5px solid #c5cbd1ff;
   max-width: 80px;
 

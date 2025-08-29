@@ -1,20 +1,29 @@
 import { styled } from "styled-components";
 
-export const FormContainer = styled.form`
+export const FormSection = styled.section`
+  justify-content: center;
   max-width: 70%;
   margin: 0 auto;
-  padding: 2rem;
+`;
+
+export const FormContainer = styled.form`
+  margin: 0 auto;
+  padding-left: 6rem;
+  padding-right: 6rem;
+  padding-bottom: 3rem;
+  padding-top: 2rem;
   background: rgba(248, 246, 246, 1);
-  border-radius: 8px;
+  border-top-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 `;
 
 export const FormTitle = styled.h2`
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   color: #fff;
   text-align: center;
+  font-weight: thin;
 `;
 
 export const FormDescription = styled.p`
@@ -22,6 +31,7 @@ export const FormDescription = styled.p`
   color: #fff;
   text-align: center;
   margin-bottom: 2rem;
+  font-style: italic;
 `;
 
 export const FormField = styled.div`
@@ -84,4 +94,3 @@ export const ErrorText = styled.span`
   margin-top: 4px;
   display: block;
 `;
-
