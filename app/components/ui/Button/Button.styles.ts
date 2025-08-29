@@ -7,7 +7,7 @@ import type {
 } from "./Button.types";
 
 const colorMap: Record<ButtonColorScheme, { bg: string; text: string }> = {
-  blue: { bg: "#305CDE", text: "white" },
+  blue: { bg: "#4f46e5", text: "white" },
   green: { bg: "#00B67E", text: "white" },
   red: { bg: "#CD1C18", text: "white" },
   pink: { bg: "#FF00FF", text: "white" },
