@@ -128,6 +128,7 @@ interface FormWrapperProps<TFormValues = Record<string, unknown>> {
   initialValues?: Partial<TFormValues>;
   validationSchema?: ZodSchema<TFormValues>;
   onValuesChange?: (values: Record<string, unknown>) => void;
+  children?: React.ReactNode;
 }
 
 export const FormWrapper = <TFormValues extends Record<string, unknown>>({
@@ -139,6 +140,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   initialValues = {},
   validationSchema,
   onValuesChange,
+  children,
 }: FormWrapperProps<TFormValues>) => {
   const [formValues, setFormValues] = useState<Partial<TFormValues>>(
     initialValues as Partial<TFormValues>
@@ -436,6 +438,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
             </FormField>
           );
         })}
+        {children}
         <Button
           type="submit"
           colorScheme="green"
