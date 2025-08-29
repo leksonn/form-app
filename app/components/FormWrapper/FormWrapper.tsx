@@ -213,8 +213,42 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
     }
   };
 
+  const handleNext = async () => {
+    if (validationSchema) {
+      try {
+        const validatedValues = validationSchema.parse(formValues);
+        setErrors({});
+        onSubmit(validatedValues as TFormValues, resetForm);
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          const validationErrors: Partial<Record<string, string>> = {};
+          err.issues.forEach((issue) => {
+            const path = issue.path[0];
+            if (typeof path === "string") {
+              validationErrors[path] = issue.message;
+            }
+          });
+          setErrors(validationErrors);
+        }
+      }
+    } else {
+      onSubmit(formValues as TFormValues, resetForm);
+    }
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const completeFormValues: Record<string, unknown> = {};
+
+    fields.forEach((field) => {
+      const value = formValues[field.name as keyof TFormValues];
+      if (field.type === "checkbox") {
+        completeFormValues[field.name] = value !== undefined ? value : false;
+      } else {
+        completeFormValues[field.name] = value !== undefined ? value : "";
+      }
+    });
 
     if (validationSchema) {
       const newErrors: Partial<Record<string, string>> = {};
@@ -449,6 +483,20 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
           {actions.map((action: StepAction, idx: number) => {
             switch (action.type) {
               case "next":
+                return (
+                  <Button
+                    key={idx}
+                    type="button"
+                    colorScheme="green"
+                    variant="solid"
+                    size="large"
+                    style={{ width: "100%" }}
+                    onClick={handleNext}
+                  >
+                    {action.text}
+                  </Button>
+                );
+
               case "submit":
                 return (
                   <Button
@@ -462,6 +510,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
                     {action.text}
                   </Button>
                 );
+
               case "previous":
                 return (
                   <Button
@@ -476,6 +525,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
                     {action.text}
                   </Button>
                 );
+
               default:
                 return null;
             }
