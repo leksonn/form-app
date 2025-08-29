@@ -65,13 +65,13 @@ export const MultiStepFormProvider = ({
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState(initialValues);
 
-  const nextStep = useCallback(() => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps - 1));
-  }, [steps]);
-
   const prevStep = useCallback(() => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
   }, []);
+
+  const nextStep = useCallback(() => {
+    setCurrentStep((prev) => Math.min(prev + 1, steps - 1));
+  }, [steps]);
 
   const updateFormData = useCallback((data: Record<string, any>) => {
     setFormData((prev) => ({ ...prev, ...data }));
