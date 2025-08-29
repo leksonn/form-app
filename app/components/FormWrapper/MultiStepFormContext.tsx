@@ -67,12 +67,10 @@ export const MultiStepFormProvider = ({
 
   const prevStep = useCallback(() => {
     setCurrentStep((prev) => Math.max(prev - 1, 0));
-    console.log("pressed");
   }, []);
 
   const nextStep = useCallback(() => {
     setCurrentStep((prev) => Math.min(prev + 1, steps - 1));
-    console.log("pressed next");
   }, [steps]);
 
   const updateFormData = useCallback((data: Record<string, any>) => {
