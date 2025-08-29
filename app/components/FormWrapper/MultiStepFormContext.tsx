@@ -22,7 +22,7 @@ interface MultiStepFormContextType {
   steps: number;
 }
 
-const MultiStepFormContext = createContext<
+export const MultiStepFormContext = createContext<
   MultiStepFormContextType | undefined
 >(undefined);
 
