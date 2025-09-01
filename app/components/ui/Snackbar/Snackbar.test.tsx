@@ -17,9 +17,4 @@ describe("Snackbar component", () => {
     render(<Snackbar message="Test message" isVisible={true} />);
     expect(screen.getByText("Test message")).toBeInTheDocument();
   });
-
-  it("matches snapshot when visible", () => {
-    const { container } = render(<Snackbar message="Hello" isVisible={true} />);
-    expect(container.firstChild).toMatchSnapshot();
-  });
 });

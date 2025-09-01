@@ -84,4 +84,15 @@ describe("DisplayWrapper", () => {
 
     expect(mockResetForm).toHaveBeenCalledTimes(1);
   });
+  it("renders confetti", () => {
+    render(
+      <TestProvider
+        value={{ formData: mockFormData, resetForm: mockResetForm }}
+      >
+        <DisplayWrapper />
+      </TestProvider>
+    );
+
+    expect(screen.getByTestId("confetti")).toBeInTheDocument();
+  });
 });

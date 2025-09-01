@@ -316,6 +316,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
       case "input":
         return (
           <Input
+            id={field.name}
             value={
               (formValues[field.name as keyof TFormValues] as string) || ""
             }
@@ -454,7 +455,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
+    <FormContainer role={"form"} onSubmit={handleSubmit}>
       <FormHeader title={title} description={description} />
       {fields.map((field) => {
         if (field.dependsOn) {
@@ -468,7 +469,7 @@ export const FormWrapper = <TFormValues extends Record<string, unknown>>({
         return (
           <FormField key={field.name}>
             {field.label && field.type !== "checkbox" && (
-              <FormLabel>{field.label}</FormLabel>
+              <FormLabel htmlFor={field.name}>{field.label}</FormLabel>
             )}
             {renderField(field)}
             {field.type === "checkbox" && errors[field.name] && (
